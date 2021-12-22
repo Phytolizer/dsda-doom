@@ -56,6 +56,8 @@ set(COMMON_SRC
     dsda/msecnode.h
     dsda/music.c
     dsda/music.h
+    dsda/name.cpp
+    dsda/name.hpp
     dsda/options.c
     dsda/options.h
     dsda/palette.c

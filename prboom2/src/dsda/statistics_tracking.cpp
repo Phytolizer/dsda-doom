@@ -1,3 +1,4 @@
+#include "dsda/name.hpp"
 #include "statistics_tracking.pb.h"
 #include <cstring>
 #include <fstream>
@@ -41,6 +42,7 @@ void dsda_TrySaveStatistics(void) {
   std::size_t i = 0;
   for (auto per_enemy : dsda_statistics.kill_statistics.per_enemy) {
     if (per_enemy.total == 0) {
+      ++i;
       continue;
     }
     statistics::protocol::EnemyKillStatistics *enemy_stats =
@@ -62,9 +64,35 @@ void dsda_TrySaveStatistics(void) {
             << dsda_statistics.kill_statistics.total << " total kills)\n";
   std::ofstream output{output_path.str(), std::ios::out | std::ios::binary};
   message.SerializeToOstream(&output);
+
+  output_path.str("");
+  output_path << dsda_DataDir() << "/statistics.txt";
+  std::ofstream txt_output{output_path.str()};
+  txt_output << "dsda-doom kill statistics\n";
+  txt_output << "-------------------------\n";
+  txt_output << "\n";
+  txt_output << "per enemy:\n";
+  i = 0;
+  for (auto enemy : dsda_statistics.kill_statistics.per_enemy) {
+    if (enemy.total > 0) {
+      txt_output << "  " << i;
+      std::string enemy_name;
+      if (dsda_TryGetEnemyName(i, &enemy_name)) {
+        txt_output << " (" << enemy_name << ")";
+      }
+      txt_output << ": " << enemy.total << " total kills\n";
+    }
+    ++i;
+  }
 }
 
 void dsda_TrackKill(weapontype_t weapon, mobjtype_t target) {
+  std::cout << "dsda_TrackKill: " << target;
+  std::string enemy_name;
+  if (dsda_TryGetEnemyName(target, &enemy_name)) {
+    std::cout << " (" << enemy_name << ")";
+  }
+  std::cout << "\n";
   dsda_statistics.kill_statistics.per_enemy[target].per_weapon[weapon]++;
   dsda_statistics.kill_statistics.per_enemy[target].total++;
   dsda_statistics.kill_statistics.total++;
