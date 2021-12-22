@@ -1,3 +1,6 @@
 {
-    "cmake.sourceDirectory": "${workspaceFolder}/prboom2"
+    "cmake.sourceDirectory": "${workspaceFolder}/prboom2",
+    "[c]": {
+        "editor.tabSize": 2
+    }
 }

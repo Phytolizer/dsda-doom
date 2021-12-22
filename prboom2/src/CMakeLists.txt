@@ -74,6 +74,10 @@ set(COMMON_SRC
     dsda/sprite.h
     dsda/state.c
     dsda/state.h
+    dsda/statistics_tracking.cpp
+    dsda/statistics_tracking.h
+    dsda/statistics_tracking.pb.cc
+    dsda/statistics_tracking.pb.h
     dsda/tas.c
     dsda/tas.h
     dsda/text_file.c
@@ -411,6 +415,7 @@ function(AddGameExecutable TARGET SOURCES)
     )
     target_link_libraries(${TARGET} PRIVATE
         ${SDL2_LIBRARIES}
+        "protobuf"
     )
     if(WIN32)
         target_link_libraries(${TARGET} PRIVATE

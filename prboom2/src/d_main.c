@@ -35,6 +35,7 @@
  *-----------------------------------------------------------------------------
  */
 
+#include "dsda/statistics_tracking.h"
 #ifdef HAVE_CONFIG_H
 #include "config.h"
 #endif
@@ -1741,6 +1742,10 @@ static void D_DoomMainSetup(void)
   IdentifyVersion();
 
   dsda_InitGlobal();
+  if (!dsda_TryLoadStatistics()) {
+    lprintf(LO_INFO, "dsda_TryLoadStatistics: Failed to load statistics. Starting from scratch.\n");
+  }
+  I_AtExit(dsda_TrySaveStatistics, false, "dsda_TrySaveStatistics", exit_priority_normal);
 
   // e6y: DEH files preloaded in wrong order
   // http://sourceforge.net/tracker/index.php?func=detail&aid=1418158&group_id=148658&atid=772943

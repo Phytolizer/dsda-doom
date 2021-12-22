@@ -1,0 +1,17 @@
+syntax = "proto3";
+
+package statistics.protocol;
+
+message KillStatistic {
+  uint64 weapon_id = 1;
+  uint64 count = 2;
+}
+
+message EnemyKillStatistics {
+  uint64 enemy_id = 1;
+  repeated KillStatistic per_weapon = 2;
+}
+
+message KillStatistics { repeated EnemyKillStatistics per_enemy = 1; }
+
+message Statistics { KillStatistics kill = 1; }
