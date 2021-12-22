@@ -21,5 +21,6 @@ typedef struct {
 
 dboolean dsda_TryLoadStatistics(void);
 void dsda_TrySaveStatistics(void);
+void dsda_TrackKill(weapontype_t weapon, mobjtype_t target);
 
 #endif

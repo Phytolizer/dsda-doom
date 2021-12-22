@@ -58,7 +58,14 @@ void dsda_TrySaveStatistics(void) {
 
   std::ostringstream output_path;
   output_path << dsda_DataDir() << "/statistics.dat";
-  std::cout << "dsda_TrySaveStatistics: " << output_path.str() << "\n";
+  std::cout << "dsda_TrySaveStatistics: " << output_path.str() << " ("
+            << dsda_statistics.kill_statistics.total << " total kills)\n";
   std::ofstream output{output_path.str(), std::ios::out | std::ios::binary};
   message.SerializeToOstream(&output);
+}
+
+void dsda_TrackKill(weapontype_t weapon, mobjtype_t target) {
+  dsda_statistics.kill_statistics.per_enemy[target].per_weapon[weapon]++;
+  dsda_statistics.kill_statistics.per_enemy[target].total++;
+  dsda_statistics.kill_statistics.total++;
 }
