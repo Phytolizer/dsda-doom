@@ -1,4 +1,5 @@
 #include "dsda/name.hpp"
+#include "doomdef.h"
 #include "info.h"
 
 bool dsda_TryGetEnemyName(int id, std::string *p_name) {
@@ -68,6 +69,40 @@ bool dsda_TryGetEnemyName(int id, std::string *p_name) {
     return true;
   case MT_DOGS:
     *p_name = "Dog";
+    return true;
+  default:
+    return false;
+  }
+}
+
+bool dsda_TryGetWeaponName(int id, std::string *p_name) {
+  switch (id) {
+  case wp_fist:
+    *p_name = "Fist";
+    return true;
+  case wp_chainsaw:
+    *p_name = "Chainsaw";
+    return true;
+  case wp_pistol:
+    *p_name = "Pistol";
+    return true;
+  case wp_shotgun:
+    *p_name = "Shotgun";
+    return true;
+  case wp_supershotgun:
+    *p_name = "Super Shotgun";
+    return true;
+  case wp_chaingun:
+    *p_name = "Chaingun";
+    return true;
+  case wp_missile:
+    *p_name = "Rocket Launcher";
+    return true;
+  case wp_plasma:
+    *p_name = "Plasma Rifle";
+    return true;
+  case wp_bfg:
+    *p_name = "BFG 9000";
     return true;
   default:
     return false;

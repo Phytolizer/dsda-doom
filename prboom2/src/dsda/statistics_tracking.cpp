@@ -84,6 +84,27 @@ void dsda_TrySaveStatistics(void) {
     }
     ++i;
   }
+  txt_output << "\nper weapon:\n";
+  size_t weapon_counts[NUMWEAPONS] = {0};
+  for (auto enemy : dsda_statistics.kill_statistics.per_enemy) {
+    i = 0;
+    for (auto weapon : enemy.per_weapon) {
+      weapon_counts[i] += weapon;
+      ++i;
+    }
+  }
+  i = 0;
+  for (size_t weapon : weapon_counts) {
+    if (weapon > 0) {
+      txt_output << "  " << i;
+      std::string weapon_name;
+      if (dsda_TryGetWeaponName(i, &weapon_name)) {
+        txt_output << " (" << weapon_name << ")";
+      }
+      txt_output << ": " << weapon << " total kills\n";
+    }
+    ++i;
+  }
 }
 
 void dsda_TrackKill(weapontype_t weapon, mobjtype_t target) {
