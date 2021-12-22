@@ -41,6 +41,8 @@
 
 #include "dsda/input.h"
 
+#include <stddef.h>
+
 //
 // MISC
 //
