@@ -35,6 +35,7 @@
 #define __M_CHEAT__
 
 #include "d_event.h"
+#include <stddef.h>
 
 #define CHEAT(cheat, deh_cheat, when, func, arg, repeatable) \
   { cheat, deh_cheat, when, func, arg, repeatable, 0, 0, 0, 0, 0, "" }

@@ -93,6 +93,7 @@
 #include "e6y_launcher.h"
 #endif
 
+#include "dsda/arguments.h"
 #include "dsda/global.h"
 #include "dsda/save.h"
 #include "dsda/data_organizer.h"
@@ -1953,6 +1954,8 @@ static void D_DoomMainSetup(void)
   // add wad files from autoload directory before wads from -file parameter
   if (autoload)
     D_AutoloadIWadDir();
+
+  dsda_CheckCheatArgs();
 
   // add any files specified on the command line with -file wadfile
   // to the wad list
