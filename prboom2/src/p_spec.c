@@ -53,6 +53,7 @@
 #include "p_user.h"
 #include "g_game.h"
 #include "p_inter.h"
+#include "p_enemy.h"
 #include "s_sound.h"
 #include "sounds.h"
 #include "i_sound.h"
@@ -67,6 +68,7 @@
 #include "dsda/global.h"
 #include "dsda/line_special.h"
 #include "dsda/map_format.h"
+#include "dsda/thing_id.h"
 
 //
 //      source animation definition
@@ -4076,8 +4078,8 @@ void P_SpawnZDoomScroller(line_t *l, int i)
     else
     {
       // The speed and direction are parameters to the special.
-      dx = (l->arg4 - 128) / 32;
-      dy = (l->arg5 - 128) / 32;
+      dx = (fixed_t) (l->arg4 - 128) * FRACUNIT / 32;
+      dy = (fixed_t) (l->arg5 - 128) * FRACUNIT / 32;
     }
   }
 
@@ -5871,6 +5873,11 @@ static fixed_t P_ArgsToFixed(fixed_t arg_i, fixed_t arg_f)
   return (arg_i << FRACBITS) + (arg_f << FRACBITS) / 100;
 }
 
+static angle_t P_ArgToAngle(angle_t arg)
+{
+  return arg * (ANG180 / 128);
+}
+
 dboolean P_ExecuteZDoomLineSpecial(int special, byte * args, line_t * line, int side, mobj_t * mo)
 {
   dboolean buttonSuccess = false;
@@ -6907,6 +6914,192 @@ dboolean P_ExecuteZDoomLineSpecial(int special, byte * args, line_t * line, int 
       break;
     case zl_light_stop:
       EV_StopLightEffect(args[0]);
+      buttonSuccess = 1;
+      break;
+    case zl_thing_spawn:
+      buttonSuccess =
+        P_SpawnThing(args[0], mo, args[1], P_ArgToAngle(args[2]), true, args[3]);
+      break;
+    case zl_thing_spawn_no_fog:
+      buttonSuccess =
+        P_SpawnThing(args[0], mo, args[1], P_ArgToAngle(args[2]), false, args[3]);
+      break;
+    case zl_thing_spawn_facing:
+      buttonSuccess =
+        P_SpawnThing(args[0], mo, args[1], ANGLE_MAX, args[2] ? false : true, args[3]);
+      break;
+    case zl_thing_projectile:
+      buttonSuccess = P_SpawnProjectile(args[0], mo, args[1], P_ArgToAngle(args[2]),
+                                        P_ArgToSpeed(args[3]), P_ArgToSpeed(args[4]),
+                                        0, NULL, 0, 0);
+      break;
+    case zl_thing_projectile_gravity:
+      buttonSuccess = P_SpawnProjectile(args[0], mo, args[1], P_ArgToAngle(args[2]),
+                                        P_ArgToSpeed(args[3]), P_ArgToSpeed(args[4]),
+                                        0, NULL, 1, 0);
+      break;
+    case zl_thing_projectile_aimed:
+      buttonSuccess = P_SpawnProjectile(args[0], mo, args[1], 0,
+                                        P_ArgToSpeed(args[2]), 0,
+                                        args[3], mo, 0, args[4]);
+      break;
+    case zl_thing_projectile_intercept:
+      // ZDoom's implementation relies on a bunch of trigonometry
+      // I tried converting this to fixed points,
+      //   but the calculations easily go out of bounds (dot products).
+      // Needs a different implementation, or 64 bit fixed point conversions
+      // Falling back on the default aimed behaviour for now
+      buttonSuccess = P_SpawnProjectile(args[0], mo, args[1], 0,
+                                        P_ArgToSpeed(args[2]), 0,
+                                        args[3], mo, 0, args[4]);
+      break;
+    case zl_thing_remove:
+      {
+        mobj_t *target;
+        thing_id_search_t search;
+
+        dsda_ResetThingIDSearch(&search);
+        while ((target = dsda_FindMobjFromThingIDOrMobj(args[0], mo, &search)))
+        {
+          if (!target->player)
+          {
+            if (target->flags & MF_COUNTKILL)
+              dsda_WatchKill(&players[consoleplayer], target);
+
+            P_RemoveMobj(target);
+          }
+        }
+      }
+      buttonSuccess = 1;
+      break;
+    case zl_thing_activate:
+      {
+        mobj_t *target;
+        thing_id_search_t search;
+
+        dsda_ResetThingIDSearch(&search);
+        while ((target = dsda_FindMobjFromThingIDOrMobj(args[0], mo, &search)))
+        {
+          if (target->flags2 & MF2_DORMANT)
+          {
+            target->flags2 &= ~MF2_DORMANT;
+            target->tics = 1;
+          }
+
+          buttonSuccess = 1;
+        }
+      }
+      break;
+    case zl_thing_deactivate:
+      {
+        mobj_t *target;
+        thing_id_search_t search;
+
+        dsda_ResetThingIDSearch(&search);
+        while ((target = dsda_FindMobjFromThingIDOrMobj(args[0], mo, &search)))
+        {
+          if (!(target->flags2 & MF2_DORMANT))
+          {
+            target->flags2 |= MF2_DORMANT;
+            target->tics = -1;
+          }
+
+          buttonSuccess = 1;
+        }
+      }
+      break;
+    case zl_thrust_thing_z:
+      {
+        fixed_t thrust;
+        mobj_t *target;
+        thing_id_search_t search;
+
+        thrust = args[1] * FRACUNIT / 4;
+
+        if (args[2])
+          thrust = -thrust;
+
+        dsda_ResetThingIDSearch(&search);
+        while ((target = dsda_FindMobjFromThingIDOrMobj(args[0], mo, &search)))
+        {
+          if (!args[3])
+            target->momz = thrust;
+          else
+            target->momz += thrust;
+
+          buttonSuccess = 1;
+        }
+      }
+      break;
+    case zl_thing_raise:
+      {
+        mobj_t *target;
+        thing_id_search_t search;
+
+        dsda_ResetThingIDSearch(&search);
+        while ((target = dsda_FindMobjFromThingIDOrMobj(args[0], mo, &search)))
+        {
+          buttonSuccess |= P_RaiseThing(target, NULL);
+        }
+      }
+    	break;
+    case zl_thing_damage:
+      {
+        mobj_t *target;
+        thing_id_search_t search;
+
+        dsda_ResetThingIDSearch(&search);
+        while ((target = dsda_FindMobjFromThingIDOrMobj(args[0], mo, &search)))
+        {
+          if (target->flags & MF_SHOOTABLE)
+            P_DamageMobj(target, NULL, mo, args[1]);
+        }
+      }
+      buttonSuccess = 1;
+      break;
+    case zl_thing_destroy:
+      if (!args[0] && !args[2])
+      {
+        P_Massacre();
+      }
+      else if (!args[0])
+      {
+        int s = -1;
+
+        while ((s = P_FindSectorFromTag(args[2], s)) >= 0)
+        {
+          msecnode_t *n;
+          sector_t *sec;
+
+          sec = &sectors[s];
+          for (n = sec->touching_thinglist; n;)
+          {
+            mobj_t *target = n->m_thing;
+
+            // Not sure if n might be freed when an enemy dies,
+            //   so let's get the next node before applying the damage
+            n = n->m_snext;
+
+            if (target->flags & MF_SHOOTABLE)
+              P_DamageMobj(target, NULL, mo, args[1] ? 10000 : target->health);
+          }
+        }
+      }
+      else
+      {
+        mobj_t *target;
+        thing_id_search_t search;
+
+        dsda_ResetThingIDSearch(&search);
+        while ((target = dsda_FindMobjFromThingID(args[0], &search)))
+        {
+          if (
+            target->flags & MF_SHOOTABLE &&
+            (!args[2] || target->subsector->sector->tag == args[2])
+          )
+            P_DamageMobj(target, NULL, mo, args[1] ? 10000 : target->health);
+        }
+      }
       buttonSuccess = 1;
       break;
     default:
