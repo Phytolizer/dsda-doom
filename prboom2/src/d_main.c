@@ -1625,6 +1625,9 @@ static void D_AutoloadDehPWadDir()
     }
 }
 
+int warpepisode = -1;
+int warpmap = -1;
+
 static void HandleWarp(void)
 {
   int p;
@@ -1646,11 +1649,17 @@ static void HandleWarp(void)
       {                       // Couldn't find real map number
         I_Error("-warp: Invalid map number.\n");
       }
+
+      warpepisode = 1;
+      warpmap = startmap;
     }
     else if (gamemode == commercial)
     {
       if (p < myargc-1)
         startmap = atoi(myargv[p+1]);   // Ty 08/29/98 - add test if last parm
+
+      warpepisode = 1;
+      warpmap = startmap;
     }
     else    // 1/25/98 killough: fix -warp xxx from crashing Doom 1 / UD
     {
@@ -1665,6 +1674,9 @@ static void HandleWarp(void)
           {
             startmap = map;
           }
+
+          warpepisode = startepisode;
+          warpmap = startmap;
         }
       }
     }

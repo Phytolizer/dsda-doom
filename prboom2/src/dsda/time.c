@@ -27,14 +27,14 @@
 // so maybe don't cut an official release with MSVC just yet.
 // it's enough to hack it into compiling for me, at least. ;)
 
-#ifdef _MSC_VER
+#if defined(_MSC_VER) || defined(_WIN32)
 
 #include <windows.h>
 
 #define CLOCK_MONOTONIC -1
-#define exp7           10000000i64 //1E+7
-#define exp9         1000000000i64 //1E+9
-#define w2ux 116444736000000000i64 //1.jan1601 to 1.jan1970
+#define exp7           10000000L //1E+7
+#define exp9         1000000000L //1E+9
+#define w2ux 116444736000000000L //1.jan1601 to 1.jan1970
 
 void unix_time(struct timespec *spec) {
   __int64 wintime; GetSystemTimeAsFileTime((FILETIME*)&wintime);

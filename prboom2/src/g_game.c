@@ -3216,6 +3216,8 @@ void G_InitNew(skill_t skill, int episode, int map)
 
   totalleveltimes = 0; // cph
 
+  G_SkipDemoStartCheck();
+
   //jff 4/16/98 force marks on automap cleared every new level start
   AM_clearMarks();
 
@@ -4513,6 +4515,7 @@ void G_DoTeleportNewMap(void)
     gamestate = GS_LEVEL;
     gameaction = ga_nothing;
     RebornPosition = LeavePosition;
+    e6y_G_DoTeleportNewMap();
 }
 
 void G_PlayerExitMap(int playerNumber)
