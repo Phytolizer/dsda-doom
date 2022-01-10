@@ -192,7 +192,7 @@ Current work is isolated to the initial pass over the level format itself - line
 | 16    | Transfer_WallLight              | :telescope:        |
 | 17    | Thing_Raise                     | :heavy_check_mark: |
 | 18    | StartConversation               | :x:                |
-| 19    | Thing_Stop                      | :telescope:        |
+| 19    | Thing_Stop                      | :heavy_check_mark: |
 | 20    | Floor_LowerByValue              | :heavy_check_mark: |
 | 21    | Floor_LowerToLowest             | :heavy_check_mark: |
 | 22    | Floor_LowerToNearest            | :heavy_check_mark: |
@@ -212,7 +212,7 @@ Current work is isolated to the initial pass over the level format itself - line
 | 36    | Floor_LowerByValueTimes8        | :heavy_check_mark: |
 | 37    | Floor_MoveToValue               | :heavy_check_mark: |
 | 38    | Ceiling_Waggle                  | :heavy_check_mark: |
-| 39    | Teleport_ZombieChanger          | :telescope:        |
+| 39    | Teleport_ZombieChanger          | :heavy_check_mark: |
 | 40    | Ceiling_LowerByValue            | :heavy_check_mark: |
 | 41    | Ceiling_RaiseByValue            | :heavy_check_mark: |
 | 42    | Ceiling_CrushAndRaise           | :heavy_check_mark: |
@@ -245,8 +245,8 @@ Current work is isolated to the initial pass over the level format itself - line
 | 69    | Ceiling_MoveToValueTimes8       | :heavy_check_mark: |
 | 70    | Teleport                        | :heavy_check_mark: |
 | 71    | Teleport_NoFog                  | :heavy_check_mark: |
-| 72    | ThrustThing                     | :telescope:        |
-| 73    | DamageThing                     | :telescope:        |
+| 72    | ThrustThing                     | :heavy_check_mark: |
+| 73    | DamageThing                     | :heavy_check_mark: |
 | 74    | Teleport_NewMap                 | :telescope:        |
 | 75    | Teleport_EndGame                | :telescope:        |
 | 76    | TeleportOther                   | :telescope:        |
@@ -329,8 +329,8 @@ Current work is isolated to the initial pass over the level format itself - line
 | 173   | NoiseAlert                      | :warning:          |
 | 174   | SendToCommunicator              | :x:                |
 | 175   | Thing_ProjectileIntercept       | :x:                |
-| 176   | Thing_ChangeTID                 | :telescope:        |
-| 177   | Thing_Hate                      | :telescope:        |
+| 176   | Thing_ChangeTID                 | :heavy_check_mark: |
+| 177   | Thing_Hate                      | :warning:          |
 | 178   | Thing_ProjectileAimed           | :heavy_check_mark: |
 | 179   | ChangeSkill                     | :x:                |
 | 180   | Thing_SetTranslation            | :telescope:        |
@@ -437,7 +437,8 @@ Current work is isolated to the initial pass over the level format itself - line
 - Line translucency works like boom (fixed alpha).
 - Line_SetBlocking only applies flags for creatures, players, monsters, sound, and everything.
 - NoiseAlert only works with the default arguments.
-- Teleport destination thing tags are currently ignored.
+- Thing_Hate only supports 0 for the third argument ("target only").
+- ThrustThing has an implicit speed limit.
 
 ### Sector Specials
 
