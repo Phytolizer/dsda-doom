@@ -249,7 +249,7 @@ Current work is isolated to the initial pass over the level format itself - line
 | 73    | DamageThing                     | :heavy_check_mark: |
 | 74    | Teleport_NewMap                 | :telescope:        |
 | 75    | Teleport_EndGame                | :telescope:        |
-| 76    | TeleportOther                   | :telescope:        |
+| 76    | TeleportOther                   | :heavy_check_mark: |
 | 77    | TeleportGroup                   | :telescope:        |
 | 78    | TeleportInSector                | :telescope:        |
 | 79    | Thing_SetConversation           | :x:                |
@@ -296,7 +296,7 @@ Current work is isolated to the initial pass over the level format itself - line
 | 120   | Radius_Quake                    | :telescope:        |
 | 121   | Line_SetIdentification          | :warning:          |
 | -     | -                               | -                  |
-| 125   | Thing_Move                      | :telescope:        |
+| 125   | Thing_Move                      | :heavy_check_mark: |
 | -     | -                               | -                  |
 | 127   | Thing_SetSpecial                | :telescope:        |
 | 128   | ThrustThingZ                    | :heavy_check_mark: |
