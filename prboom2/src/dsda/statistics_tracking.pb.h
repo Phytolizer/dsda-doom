@@ -361,6 +361,8 @@ class EnemyKillStatistics final :
   enum : int {
     kPerWeaponFieldNumber = 2,
     kEnemyIdFieldNumber = 1,
+    kInfightFieldNumber = 3,
+    kSuicideFieldNumber = 4,
   };
   // repeated .statistics.protocol.KillStatistic per_weapon = 2;
   int per_weapon_size() const;
@@ -389,6 +391,24 @@ class EnemyKillStatistics final :
   void _internal_set_enemy_id(uint64_t value);
   public:
 
+  // uint64 infight = 3;
+  void clear_infight();
+  uint64_t infight() const;
+  void set_infight(uint64_t value);
+  private:
+  uint64_t _internal_infight() const;
+  void _internal_set_infight(uint64_t value);
+  public:
+
+  // uint64 suicide = 4;
+  void clear_suicide();
+  uint64_t suicide() const;
+  void set_suicide(uint64_t value);
+  private:
+  uint64_t _internal_suicide() const;
+  void _internal_set_suicide(uint64_t value);
+  public:
+
   // @@protoc_insertion_point(class_scope:statistics.protocol.EnemyKillStatistics)
  private:
   class _Internal;
@@ -398,6 +418,8 @@ class EnemyKillStatistics final :
   typedef void DestructorSkippable_;
   ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField< ::statistics::protocol::KillStatistic > per_weapon_;
   uint64_t enemy_id_;
+  uint64_t infight_;
+  uint64_t suicide_;
   mutable ::PROTOBUF_NAMESPACE_ID::internal::CachedSize _cached_size_;
   friend struct ::TableStruct_statistics_5ftracking_2eproto;
 };
@@ -824,6 +846,46 @@ inline const ::PROTOBUF_NAMESPACE_ID::RepeatedPtrField< ::statistics::protocol::
 EnemyKillStatistics::per_weapon() const {
   // @@protoc_insertion_point(field_list:statistics.protocol.EnemyKillStatistics.per_weapon)
   return per_weapon_;
+}
+
+// uint64 infight = 3;
+inline void EnemyKillStatistics::clear_infight() {
+  infight_ = uint64_t{0u};
+}
+inline uint64_t EnemyKillStatistics::_internal_infight() const {
+  return infight_;
+}
+inline uint64_t EnemyKillStatistics::infight() const {
+  // @@protoc_insertion_point(field_get:statistics.protocol.EnemyKillStatistics.infight)
+  return _internal_infight();
+}
+inline void EnemyKillStatistics::_internal_set_infight(uint64_t value) {
+  
+  infight_ = value;
+}
+inline void EnemyKillStatistics::set_infight(uint64_t value) {
+  _internal_set_infight(value);
+  // @@protoc_insertion_point(field_set:statistics.protocol.EnemyKillStatistics.infight)
+}
+
+// uint64 suicide = 4;
+inline void EnemyKillStatistics::clear_suicide() {
+  suicide_ = uint64_t{0u};
+}
+inline uint64_t EnemyKillStatistics::_internal_suicide() const {
+  return suicide_;
+}
+inline uint64_t EnemyKillStatistics::suicide() const {
+  // @@protoc_insertion_point(field_get:statistics.protocol.EnemyKillStatistics.suicide)
+  return _internal_suicide();
+}
+inline void EnemyKillStatistics::_internal_set_suicide(uint64_t value) {
+  
+  suicide_ = value;
+}
+inline void EnemyKillStatistics::set_suicide(uint64_t value) {
+  _internal_set_suicide(value);
+  // @@protoc_insertion_point(field_set:statistics.protocol.EnemyKillStatistics.suicide)
 }
 
 // -------------------------------------------------------------------

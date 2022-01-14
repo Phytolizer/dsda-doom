@@ -160,7 +160,6 @@ void dsda_WatchDeath(mobj_t* thing) {
 
 void dsda_WatchKill(player_t* player, mobj_t* target) {
   player->killcount++;
-  dsda_TrackKill(player->readyweapon, target->type);
   if (target->intflags & MIF_SPAWNED_BY_ICON) player->maxkilldiscount++;
 }
 

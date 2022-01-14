@@ -34,7 +34,9 @@ PROTOBUF_ATTRIBUTE_NO_DESTROY PROTOBUF_CONSTINIT KillStatisticDefaultTypeInterna
 constexpr EnemyKillStatistics::EnemyKillStatistics(
   ::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized)
   : per_weapon_()
-  , enemy_id_(uint64_t{0u}){}
+  , enemy_id_(uint64_t{0u})
+  , infight_(uint64_t{0u})
+  , suicide_(uint64_t{0u}){}
 struct EnemyKillStatisticsDefaultTypeInternal {
   constexpr EnemyKillStatisticsDefaultTypeInternal()
     : _instance(::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized{}) {}
@@ -91,6 +93,8 @@ const uint32_t TableStruct_statistics_5ftracking_2eproto::offsets[] PROTOBUF_SEC
   ~0u,  // no _inlined_string_donated_
   PROTOBUF_FIELD_OFFSET(::statistics::protocol::EnemyKillStatistics, enemy_id_),
   PROTOBUF_FIELD_OFFSET(::statistics::protocol::EnemyKillStatistics, per_weapon_),
+  PROTOBUF_FIELD_OFFSET(::statistics::protocol::EnemyKillStatistics, infight_),
+  PROTOBUF_FIELD_OFFSET(::statistics::protocol::EnemyKillStatistics, suicide_),
   ~0u,  // no _has_bits_
   PROTOBUF_FIELD_OFFSET(::statistics::protocol::KillStatistics, _internal_metadata_),
   ~0u,  // no _extensions_
@@ -109,8 +113,8 @@ const uint32_t TableStruct_statistics_5ftracking_2eproto::offsets[] PROTOBUF_SEC
 static const ::PROTOBUF_NAMESPACE_ID::internal::MigrationSchema schemas[] PROTOBUF_SECTION_VARIABLE(protodesc_cold) = {
   { 0, -1, -1, sizeof(::statistics::protocol::KillStatistic)},
   { 8, -1, -1, sizeof(::statistics::protocol::EnemyKillStatistics)},
-  { 16, -1, -1, sizeof(::statistics::protocol::KillStatistics)},
-  { 23, -1, -1, sizeof(::statistics::protocol::Statistics)},
+  { 18, -1, -1, sizeof(::statistics::protocol::KillStatistics)},
+  { 25, -1, -1, sizeof(::statistics::protocol::Statistics)},
 };
 
 static ::PROTOBUF_NAMESPACE_ID::Message const * const file_default_instances[] = {
@@ -123,17 +127,18 @@ static ::PROTOBUF_NAMESPACE_ID::Message const * const file_default_instances[] =
 const char descriptor_table_protodef_statistics_5ftracking_2eproto[] PROTOBUF_SECTION_VARIABLE(protodesc_cold) =
   "\n\031statistics_tracking.proto\022\023statistics."
   "protocol\"1\n\rKillStatistic\022\021\n\tweapon_id\030\001"
-  " \001(\004\022\r\n\005count\030\002 \001(\004\"_\n\023EnemyKillStatisti"
-  "cs\022\020\n\010enemy_id\030\001 \001(\004\0226\n\nper_weapon\030\002 \003(\013"
-  "2\".statistics.protocol.KillStatistic\"M\n\016"
-  "KillStatistics\022;\n\tper_enemy\030\001 \003(\0132(.stat"
-  "istics.protocol.EnemyKillStatistics\"\?\n\nS"
-  "tatistics\0221\n\004kill\030\001 \001(\0132#.statistics.pro"
-  "tocol.KillStatisticsb\006proto3"
+  " \001(\004\022\r\n\005count\030\002 \001(\004\"\201\001\n\023EnemyKillStatist"
+  "ics\022\020\n\010enemy_id\030\001 \001(\004\0226\n\nper_weapon\030\002 \003("
+  "\0132\".statistics.protocol.KillStatistic\022\017\n"
+  "\007infight\030\003 \001(\004\022\017\n\007suicide\030\004 \001(\004\"M\n\016KillS"
+  "tatistics\022;\n\tper_enemy\030\001 \003(\0132(.statistic"
+  "s.protocol.EnemyKillStatistics\"\?\n\nStatis"
+  "tics\0221\n\004kill\030\001 \001(\0132#.statistics.protocol"
+  ".KillStatisticsb\006proto3"
   ;
 static ::PROTOBUF_NAMESPACE_ID::internal::once_flag descriptor_table_statistics_5ftracking_2eproto_once;
 const ::PROTOBUF_NAMESPACE_ID::internal::DescriptorTable descriptor_table_statistics_5ftracking_2eproto = {
-  false, false, 348, descriptor_table_protodef_statistics_5ftracking_2eproto, "statistics_tracking.proto", 
+  false, false, 383, descriptor_table_protodef_statistics_5ftracking_2eproto, "statistics_tracking.proto", 
   &descriptor_table_statistics_5ftracking_2eproto_once, nullptr, 0, 4,
   schemas, file_default_instances, TableStruct_statistics_5ftracking_2eproto::offsets,
   file_level_metadata_statistics_5ftracking_2eproto, file_level_enum_descriptors_statistics_5ftracking_2eproto, file_level_service_descriptors_statistics_5ftracking_2eproto,
@@ -379,12 +384,17 @@ EnemyKillStatistics::EnemyKillStatistics(const EnemyKillStatistics& from)
   : ::PROTOBUF_NAMESPACE_ID::Message(),
       per_weapon_(from.per_weapon_) {
   _internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
-  enemy_id_ = from.enemy_id_;
+  ::memcpy(&enemy_id_, &from.enemy_id_,
+    static_cast<size_t>(reinterpret_cast<char*>(&suicide_) -
+    reinterpret_cast<char*>(&enemy_id_)) + sizeof(suicide_));
   // @@protoc_insertion_point(copy_constructor:statistics.protocol.EnemyKillStatistics)
 }
 
 inline void EnemyKillStatistics::SharedCtor() {
-enemy_id_ = uint64_t{0u};
+::memset(reinterpret_cast<char*>(this) + static_cast<size_t>(
+    reinterpret_cast<char*>(&enemy_id_) - reinterpret_cast<char*>(this)),
+    0, static_cast<size_t>(reinterpret_cast<char*>(&suicide_) -
+    reinterpret_cast<char*>(&enemy_id_)) + sizeof(suicide_));
 }
 
 EnemyKillStatistics::~EnemyKillStatistics() {
@@ -415,7 +425,9 @@ void EnemyKillStatistics::Clear() {
   (void) cached_has_bits;
 
   per_weapon_.Clear();
-  enemy_id_ = uint64_t{0u};
+  ::memset(&enemy_id_, 0, static_cast<size_t>(
+      reinterpret_cast<char*>(&suicide_) -
+      reinterpret_cast<char*>(&enemy_id_)) + sizeof(suicide_));
   _internal_metadata_.Clear<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>();
 }
 
@@ -443,6 +455,22 @@ const char* EnemyKillStatistics::_InternalParse(const char* ptr, ::PROTOBUF_NAME
             CHK_(ptr);
             if (!ctx->DataAvailable(ptr)) break;
           } while (::PROTOBUF_NAMESPACE_ID::internal::ExpectTag<18>(ptr));
+        } else
+          goto handle_unusual;
+        continue;
+      // uint64 infight = 3;
+      case 3:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 24)) {
+          infight_ = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint64(&ptr);
+          CHK_(ptr);
+        } else
+          goto handle_unusual;
+        continue;
+      // uint64 suicide = 4;
+      case 4:
+        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 32)) {
+          suicide_ = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint64(&ptr);
+          CHK_(ptr);
         } else
           goto handle_unusual;
         continue;
@@ -489,6 +517,18 @@ uint8_t* EnemyKillStatistics::_InternalSerialize(
       InternalWriteMessage(2, this->_internal_per_weapon(i), target, stream);
   }
 
+  // uint64 infight = 3;
+  if (this->_internal_infight() != 0) {
+    target = stream->EnsureSpace(target);
+    target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::WriteUInt64ToArray(3, this->_internal_infight(), target);
+  }
+
+  // uint64 suicide = 4;
+  if (this->_internal_suicide() != 0) {
+    target = stream->EnsureSpace(target);
+    target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::WriteUInt64ToArray(4, this->_internal_suicide(), target);
+  }
+
   if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
     target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormat::InternalSerializeUnknownFieldsToArray(
         _internal_metadata_.unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(::PROTOBUF_NAMESPACE_ID::UnknownFieldSet::default_instance), target, stream);
@@ -517,6 +557,16 @@ size_t EnemyKillStatistics::ByteSizeLong() const {
     total_size += ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::UInt64SizePlusOne(this->_internal_enemy_id());
   }
 
+  // uint64 infight = 3;
+  if (this->_internal_infight() != 0) {
+    total_size += ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::UInt64SizePlusOne(this->_internal_infight());
+  }
+
+  // uint64 suicide = 4;
+  if (this->_internal_suicide() != 0) {
+    total_size += ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::UInt64SizePlusOne(this->_internal_suicide());
+  }
+
   return MaybeComputeUnknownFieldsSize(total_size, &_cached_size_);
 }
 
@@ -543,6 +593,12 @@ void EnemyKillStatistics::MergeFrom(const EnemyKillStatistics& from) {
   if (from._internal_enemy_id() != 0) {
     _internal_set_enemy_id(from._internal_enemy_id());
   }
+  if (from._internal_infight() != 0) {
+    _internal_set_infight(from._internal_infight());
+  }
+  if (from._internal_suicide() != 0) {
+    _internal_set_suicide(from._internal_suicide());
+  }
   _internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
 }
 
@@ -561,7 +617,12 @@ void EnemyKillStatistics::InternalSwap(EnemyKillStatistics* other) {
   using std::swap;
   _internal_metadata_.InternalSwap(&other->_internal_metadata_);
   per_weapon_.InternalSwap(&other->per_weapon_);
-  swap(enemy_id_, other->enemy_id_);
+  ::PROTOBUF_NAMESPACE_ID::internal::memswap<
+      PROTOBUF_FIELD_OFFSET(EnemyKillStatistics, suicide_)
+      + sizeof(EnemyKillStatistics::suicide_)
+      - PROTOBUF_FIELD_OFFSET(EnemyKillStatistics, enemy_id_)>(
+          reinterpret_cast<char*>(&enemy_id_),
+          reinterpret_cast<char*>(&other->enemy_id_));
 }
 
 ::PROTOBUF_NAMESPACE_ID::Metadata EnemyKillStatistics::GetMetadata() const {

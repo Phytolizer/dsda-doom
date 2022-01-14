@@ -4,10 +4,13 @@
 #include "doomdef.h"
 #include "doomtype.h"
 #include "info.h"
+#include "p_mobj.h"
 
 typedef struct {
   uint_64_t total;
   uint_64_t per_weapon[NUMWEAPONS];
+  uint_64_t infight;
+  uint_64_t suicide;
 } dsda_EnemyKillStatistics;
 
 typedef struct {
@@ -21,6 +24,6 @@ typedef struct {
 
 dboolean dsda_TryLoadStatistics(void);
 void dsda_TrySaveStatistics(void);
-void dsda_TrackKill(weapontype_t weapon, mobjtype_t target);
+void dsda_TrackKill(mobj_t* source, mobjtype_t target);
 
 #endif

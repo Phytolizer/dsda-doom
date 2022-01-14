@@ -5,6 +5,7 @@
 #include <iostream>
 #include <sstream>
 extern "C" {
+#include "d_player.h"
 #include "dsda/data_organizer.h"
 #include "statistics_tracking.h"
 }
@@ -31,6 +32,10 @@ dboolean dsda_TryLoadStatistics(void) {
           .total += kill_per_weapon.count();
       dsda_statistics.kill_statistics.total += kill_per_weapon.count();
     }
+    dsda_statistics.kill_statistics.per_enemy[kill_per_enemy.enemy_id()]
+        .infight += kill_per_enemy.infight();
+    dsda_statistics.kill_statistics.per_enemy[kill_per_enemy.enemy_id()]
+        .suicide += kill_per_enemy.suicide();
   }
 
   return true;
@@ -55,6 +60,8 @@ void dsda_TrySaveStatistics(void) {
       kill->set_count(per_weapon);
       ++j;
     }
+    enemy_stats->set_infight(per_enemy.infight);
+    enemy_stats->set_suicide(per_enemy.suicide);
     ++i;
   }
 
@@ -107,14 +114,30 @@ void dsda_TrySaveStatistics(void) {
   }
 }
 
-void dsda_TrackKill(weapontype_t weapon, mobjtype_t target) {
+void dsda_TrackKill(mobj_t *source, mobjtype_t target) {
   std::cout << "dsda_TrackKill: " << target;
   std::string enemy_name;
   if (dsda_TryGetEnemyName(target, &enemy_name)) {
     std::cout << " (" << enemy_name << ")";
   }
-  std::cout << "\n";
-  dsda_statistics.kill_statistics.per_enemy[target].per_weapon[weapon]++;
+  if (source) {
+    std::string source_type;
+    if (source->player) {
+      dsda_statistics.kill_statistics.per_enemy[target]
+          .per_weapon[source->player->readyweapon]++;
+      std::string weapon_name;
+      if (dsda_TryGetWeaponName(source->player->readyweapon, &weapon_name)) {
+        std::cout << " by " << weapon_name;
+      }
+    } else if (dsda_TryGetEnemyName(source->type, &source_type)) {
+      dsda_statistics.kill_statistics.per_enemy[target].infight++;
+      std::cout << " by infighting from " << source_type;
+    }
+  } else {
+    dsda_statistics.kill_statistics.per_enemy[target].suicide++;
+    std::cout << " (suicide)";
+  }
   dsda_statistics.kill_statistics.per_enemy[target].total++;
   dsda_statistics.kill_statistics.total++;
+  std::cout << "\n";
 }

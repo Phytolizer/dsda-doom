@@ -57,6 +57,7 @@
 
 #include "dsda.h"
 #include "dsda/map_format.h"
+#include "dsda/statistics_tracking.h"
 
 #include "heretic/def.h"
 #include "heretic/sb_bar.h"
@@ -819,6 +820,7 @@ static void P_KillMobj(mobj_t *source, mobj_t *target)
     totallive--;
 
   dsda_WatchDeath(target);
+  dsda_TrackKill(source, target->type);
 
   // hexen
   if ((target->flags & MF_COUNTKILL || target->type == HEXEN_MT_ZBELL)

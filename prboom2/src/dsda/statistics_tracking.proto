@@ -10,6 +10,8 @@ message KillStatistic {
 message EnemyKillStatistics {
   uint64 enemy_id = 1;
   repeated KillStatistic per_weapon = 2;
+  uint64 infight = 3;
+  uint64 suicide = 4;
 }
 
 message KillStatistics { repeated EnemyKillStatistics per_enemy = 1; }
