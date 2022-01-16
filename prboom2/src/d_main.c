@@ -98,6 +98,7 @@
 #include "dsda/save.h"
 #include "dsda/data_organizer.h"
 #include "dsda/map_format.h"
+#include "dsda/mobjinfo.h"
 #include "dsda/settings.h"
 #include "dsda/time.h"
 
@@ -2181,7 +2182,7 @@ static void D_DoomMainSetup(void)
   }
 
   PostProcessDeh();
-
+  dsda_AppendZDoomMobjInfo();
   dsda_ApplyDefaultMapFormat();
 
   V_InitColorTranslation(); //jff 4/24/98 load color translation lumps
