@@ -1492,6 +1492,8 @@ static void UnarchiveMobjs(void)
     }
     for (i = 0; i < MobjCount; i++)
     {
+        int references;
+
         mobj = MobjList[i];
         StreamIn_mobj_t(mobj);
 
@@ -1503,7 +1505,10 @@ static void UnarchiveMobjs(void)
         {
           mobj->index = -1;
           mobj->thinker.function = P_RemoveThinkerDelayed;
+
+          references = mobj->thinker.references;
           P_AddThinker(&mobj->thinker);
+          mobj->thinker.references = references;
 
           continue;
         }
@@ -1513,7 +1518,10 @@ static void UnarchiveMobjs(void)
         mobj->ceilingz = mobj->subsector->sector->ceilingheight;
 
         mobj->thinker.function = P_MobjThinker;
+
+        references = mobj->thinker.references;
         P_AddThinker(&mobj->thinker);
+        mobj->thinker.references = references;
     }
     map_format.build_mobj_thing_id_list();
     P_InitCreatureCorpseQueue(true);    // true = scan for corpses
