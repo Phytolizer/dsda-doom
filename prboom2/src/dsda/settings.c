@@ -48,6 +48,7 @@ dsda_setting_t dsda_setting[DSDA_SETTING_IDENTIFIER_COUNT] = {
 
 int dsda_auto_key_frame_interval;
 int dsda_auto_key_frame_depth;
+int dsda_backup_key_frames;
 int dsda_cycle_ghost_colors;
 int dsda_tas;
 int dsda_skip_next_wipe;
@@ -329,6 +330,10 @@ int dsda_AutoKeyFrameDepth(void) {
   if (dsda_StrictMode()) return 0;
 
   return dsda_auto_key_frame_depth;
+}
+
+dboolean dsda_BackupKeyFrames(void) {
+  return dsda_backup_key_frames;
 }
 
 void dsda_SkipNextWipe(void) {

@@ -164,7 +164,7 @@ void dsda_StoreKeyFrame(byte** buffer, byte complete) {
   savebuffer = save_p = NULL;
 
   if (complete) {
-    if (demo_write_buffer_offset)
+    if (dsda_backup_key_frames && demo_write_buffer_offset)
       dsda_ExportKeyFrame(*buffer, length);
 
     doom_printf("Stored key frame");
