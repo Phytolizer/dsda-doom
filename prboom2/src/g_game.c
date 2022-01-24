@@ -93,6 +93,7 @@
 #include "dsda/settings.h"
 #include "dsda/input.h"
 #include "dsda/map_format.h"
+#include "dsda/mapinfo.h"
 #include "dsda/mouse.h"
 #include "dsda/options.h"
 #include "dsda/tas.h"
@@ -101,8 +102,6 @@
 
 #define SAVEGAMESIZE  0x20000
 #define SAVESTRINGSIZE  24
-
-struct MapEntry *G_LookupMapinfo(int gameepisode, int gamemap);
 
 struct
 {
@@ -148,7 +147,6 @@ skill_t         gameskill;
 dboolean         respawnmonsters;
 int             gameepisode;
 int             gamemap;
-struct MapEntry    *gamemapinfo;
 dboolean         paused;
 // CPhipps - moved *_loadgame vars here
 static dboolean forced_loadgame = false;
@@ -1983,8 +1981,7 @@ void G_DoCompleted (void)
   wminfo.nextep = wminfo.epsd = gameepisode -1;
   wminfo.last = gamemap -1;
 
-  wminfo.lastmapinfo = gamemapinfo;
-  wminfo.nextmapinfo = NULL;
+  dsda_UpdateLastMapInfo();
   if (gamemapinfo)
   {
     const char *next = "";
@@ -2108,7 +2105,7 @@ void G_DoCompleted (void)
 
 frommapinfo:
 
-  wminfo.nextmapinfo = G_LookupMapinfo(wminfo.nextep+1, wminfo.next+1);
+  dsda_UpdateNextMapInfo();
   wminfo.maxkills = totalkills;
   wminfo.maxitems = totalitems;
   wminfo.maxsecret = totalsecret;
@@ -2219,7 +2216,7 @@ void G_DoWorldDone (void)
   gamestate = GS_LEVEL;
   gameepisode = wminfo.nextep + 1;
   gamemap = wminfo.next + 1;
-  gamemapinfo = G_LookupMapinfo(gameepisode, gamemap);
+  dsda_UpdateMapInfo();
   G_DoLoadLevel();
   gameaction = ga_nothing;
   AM_clearMarks();           //jff 4/12/98 clear any marks on the automap
@@ -2462,7 +2459,7 @@ void G_DoLoadGame(void)
   gameskill = *save_p++;
   gameepisode = *save_p++;
   gamemap = *save_p++;
-  gamemapinfo = G_LookupMapinfo(gameepisode, gamemap);
+  dsda_UpdateMapInfo();
 
   for (i = 0; i < g_maxplayers; i++)
     playeringame[i] = *save_p++;
@@ -3035,35 +3032,6 @@ void G_SetFastParms(int fast_pending)
   }
 }
 
-struct MapEntry *G_LookupMapinfo(int gameepisode, int gamemap)
-{
-  char lumpname[9];
-  unsigned i;
-  if (gamemode == commercial) snprintf(lumpname, 9, "MAP%02d", gamemap);
-  else snprintf(lumpname, 9, "E%dM%d", gameepisode, gamemap);
-  for (i = 0; i < Maps.mapcount; i++)
-  {
-    if (!stricmp(lumpname, Maps.maps[i].mapname))
-    {
-      return &Maps.maps[i];
-    }
-  }
-  return NULL;
-}
-
-struct MapEntry *G_LookupMapinfoByName(const char *lumpname)
-{
-  unsigned i;
-  for (i = 0; i < Maps.mapcount; i++)
-  {
-    if (!stricmp(lumpname, Maps.maps[i].mapname))
-    {
-      return &Maps.maps[i];
-    }
-  }
-  return NULL;
-}
-
 int G_ValidateMapName(const char *mapname, int *pEpi, int *pMap)
 {
   // Check if the given map name can be expressed as a gameepisode/gamemap pair and be reconstructed from it.
@@ -3212,7 +3180,7 @@ void G_InitNew(skill_t skill, int episode, int map)
   gameepisode = episode;
   gamemap = map;
   gameskill = skill;
-  gamemapinfo = G_LookupMapinfo(gameepisode, gamemap);
+  dsda_UpdateMapInfo();
 
   totalleveltimes = 0; // cph
 
