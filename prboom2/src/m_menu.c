@@ -3311,7 +3311,7 @@ setup_menu_t misc_settings[] = {
   { "Boom Weapon Auto Switch", S_YESNO, m_null, G_X, G_Y + 18 * 8, { "dsda_switch_when_ammo_runs_out" } },
 
 #ifdef USE_WINDOWS_LAUNCHER
-  { "Use Windows Launcher", S_CHOICE, m_null, G_X, G_Y + 18 * 8, { "launcher_enable" }, 0, NULL, launcher_enable_states },
+  { "Use Windows Launcher", S_CHOICE, m_null, G_X, G_Y + 19 * 8, { "launcher_enable" }, 0, NULL, launcher_enable_states },
 #endif
 
   { "<-", S_SKIP | S_PREV, m_null, KB_PREV, KB_Y + 20 * 8, { device_settings } },
