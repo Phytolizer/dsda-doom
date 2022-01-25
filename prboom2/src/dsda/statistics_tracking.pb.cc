@@ -20,8 +20,8 @@ namespace statistics {
 namespace protocol {
 constexpr KillStatistic::KillStatistic(
   ::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized)
-  : weapon_id_(PROTOBUF_ULONGLONG(0))
-  , count_(PROTOBUF_ULONGLONG(0)){}
+  : weapon_id_(uint64_t{0u})
+  , count_(uint64_t{0u}){}
 struct KillStatisticDefaultTypeInternal {
   constexpr KillStatisticDefaultTypeInternal()
     : _instance(::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized{}) {}
@@ -34,9 +34,9 @@ PROTOBUF_ATTRIBUTE_NO_DESTROY PROTOBUF_CONSTINIT KillStatisticDefaultTypeInterna
 constexpr EnemyKillStatistics::EnemyKillStatistics(
   ::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized)
   : per_weapon_()
-  , enemy_id_(PROTOBUF_ULONGLONG(0))
-  , infight_(PROTOBUF_ULONGLONG(0))
-  , suicide_(PROTOBUF_ULONGLONG(0)){}
+  , enemy_id_(uint64_t{0u})
+  , infight_(uint64_t{0u})
+  , suicide_(uint64_t{0u}){}
 struct EnemyKillStatisticsDefaultTypeInternal {
   constexpr EnemyKillStatisticsDefaultTypeInternal()
     : _instance(::PROTOBUF_NAMESPACE_ID::internal::ConstantInitialized{}) {}
@@ -76,12 +76,13 @@ static ::PROTOBUF_NAMESPACE_ID::Metadata file_level_metadata_statistics_5ftracki
 static constexpr ::PROTOBUF_NAMESPACE_ID::EnumDescriptor const** file_level_enum_descriptors_statistics_5ftracking_2eproto = nullptr;
 static constexpr ::PROTOBUF_NAMESPACE_ID::ServiceDescriptor const** file_level_service_descriptors_statistics_5ftracking_2eproto = nullptr;
 
-const ::PROTOBUF_NAMESPACE_ID::uint32 TableStruct_statistics_5ftracking_2eproto::offsets[] PROTOBUF_SECTION_VARIABLE(protodesc_cold) = {
+const uint32_t TableStruct_statistics_5ftracking_2eproto::offsets[] PROTOBUF_SECTION_VARIABLE(protodesc_cold) = {
   ~0u,  // no _has_bits_
   PROTOBUF_FIELD_OFFSET(::statistics::protocol::KillStatistic, _internal_metadata_),
   ~0u,  // no _extensions_
   ~0u,  // no _oneof_case_
   ~0u,  // no _weak_field_map_
+  ~0u,  // no _inlined_string_donated_
   PROTOBUF_FIELD_OFFSET(::statistics::protocol::KillStatistic, weapon_id_),
   PROTOBUF_FIELD_OFFSET(::statistics::protocol::KillStatistic, count_),
   ~0u,  // no _has_bits_
@@ -89,6 +90,7 @@ const ::PROTOBUF_NAMESPACE_ID::uint32 TableStruct_statistics_5ftracking_2eproto:
   ~0u,  // no _extensions_
   ~0u,  // no _oneof_case_
   ~0u,  // no _weak_field_map_
+  ~0u,  // no _inlined_string_donated_
   PROTOBUF_FIELD_OFFSET(::statistics::protocol::EnemyKillStatistics, enemy_id_),
   PROTOBUF_FIELD_OFFSET(::statistics::protocol::EnemyKillStatistics, per_weapon_),
   PROTOBUF_FIELD_OFFSET(::statistics::protocol::EnemyKillStatistics, infight_),
@@ -98,19 +100,21 @@ const ::PROTOBUF_NAMESPACE_ID::uint32 TableStruct_statistics_5ftracking_2eproto:
   ~0u,  // no _extensions_
   ~0u,  // no _oneof_case_
   ~0u,  // no _weak_field_map_
+  ~0u,  // no _inlined_string_donated_
   PROTOBUF_FIELD_OFFSET(::statistics::protocol::KillStatistics, per_enemy_),
   ~0u,  // no _has_bits_
   PROTOBUF_FIELD_OFFSET(::statistics::protocol::Statistics, _internal_metadata_),
   ~0u,  // no _extensions_
   ~0u,  // no _oneof_case_
   ~0u,  // no _weak_field_map_
+  ~0u,  // no _inlined_string_donated_
   PROTOBUF_FIELD_OFFSET(::statistics::protocol::Statistics, kill_),
 };
 static const ::PROTOBUF_NAMESPACE_ID::internal::MigrationSchema schemas[] PROTOBUF_SECTION_VARIABLE(protodesc_cold) = {
-  { 0, -1, sizeof(::statistics::protocol::KillStatistic)},
-  { 7, -1, sizeof(::statistics::protocol::EnemyKillStatistics)},
-  { 16, -1, sizeof(::statistics::protocol::KillStatistics)},
-  { 22, -1, sizeof(::statistics::protocol::Statistics)},
+  { 0, -1, -1, sizeof(::statistics::protocol::KillStatistic)},
+  { 8, -1, -1, sizeof(::statistics::protocol::EnemyKillStatistics)},
+  { 18, -1, -1, sizeof(::statistics::protocol::KillStatistics)},
+  { 25, -1, -1, sizeof(::statistics::protocol::Statistics)},
 };
 
 static ::PROTOBUF_NAMESPACE_ID::Message const * const file_default_instances[] = {
@@ -154,10 +158,13 @@ class KillStatistic::_Internal {
  public:
 };
 
-KillStatistic::KillStatistic(::PROTOBUF_NAMESPACE_ID::Arena* arena)
-  : ::PROTOBUF_NAMESPACE_ID::Message(arena) {
+KillStatistic::KillStatistic(::PROTOBUF_NAMESPACE_ID::Arena* arena,
+                         bool is_message_owned)
+  : ::PROTOBUF_NAMESPACE_ID::Message(arena, is_message_owned) {
   SharedCtor();
-  RegisterArenaDtor(arena);
+  if (!is_message_owned) {
+    RegisterArenaDtor(arena);
+  }
   // @@protoc_insertion_point(arena_constructor:statistics.protocol.KillStatistic)
 }
 KillStatistic::KillStatistic(const KillStatistic& from)
@@ -169,7 +176,7 @@ KillStatistic::KillStatistic(const KillStatistic& from)
   // @@protoc_insertion_point(copy_constructor:statistics.protocol.KillStatistic)
 }
 
-void KillStatistic::SharedCtor() {
+inline void KillStatistic::SharedCtor() {
 ::memset(reinterpret_cast<char*>(this) + static_cast<size_t>(
     reinterpret_cast<char*>(&weapon_id_) - reinterpret_cast<char*>(this)),
     0, static_cast<size_t>(reinterpret_cast<char*>(&count_) -
@@ -178,12 +185,13 @@ void KillStatistic::SharedCtor() {
 
 KillStatistic::~KillStatistic() {
   // @@protoc_insertion_point(destructor:statistics.protocol.KillStatistic)
+  if (GetArenaForAllocation() != nullptr) return;
   SharedDtor();
   _internal_metadata_.Delete<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>();
 }
 
-void KillStatistic::SharedDtor() {
-  GOOGLE_DCHECK(GetArena() == nullptr);
+inline void KillStatistic::SharedDtor() {
+  GOOGLE_DCHECK(GetArenaForAllocation() == nullptr);
 }
 
 void KillStatistic::ArenaDtor(void* object) {
@@ -198,7 +206,7 @@ void KillStatistic::SetCachedSize(int size) const {
 
 void KillStatistic::Clear() {
 // @@protoc_insertion_point(message_clear_start:statistics.protocol.KillStatistic)
-  ::PROTOBUF_NAMESPACE_ID::uint32 cached_has_bits = 0;
+  uint32_t cached_has_bits = 0;
   // Prevent compiler warnings about cached_has_bits being unused
   (void) cached_has_bits;
 
@@ -211,60 +219,62 @@ void KillStatistic::Clear() {
 const char* KillStatistic::_InternalParse(const char* ptr, ::PROTOBUF_NAMESPACE_ID::internal::ParseContext* ctx) {
 #define CHK_(x) if (PROTOBUF_PREDICT_FALSE(!(x))) goto failure
   while (!ctx->Done(&ptr)) {
-    ::PROTOBUF_NAMESPACE_ID::uint32 tag;
+    uint32_t tag;
     ptr = ::PROTOBUF_NAMESPACE_ID::internal::ReadTag(ptr, &tag);
     switch (tag >> 3) {
       // uint64 weapon_id = 1;
       case 1:
-        if (PROTOBUF_PREDICT_TRUE(static_cast<::PROTOBUF_NAMESPACE_ID::uint8>(tag) == 8)) {
+        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 8)) {
           weapon_id_ = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint64(&ptr);
           CHK_(ptr);
-        } else goto handle_unusual;
+        } else
+          goto handle_unusual;
         continue;
       // uint64 count = 2;
       case 2:
-        if (PROTOBUF_PREDICT_TRUE(static_cast<::PROTOBUF_NAMESPACE_ID::uint8>(tag) == 16)) {
+        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 16)) {
           count_ = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint64(&ptr);
           CHK_(ptr);
-        } else goto handle_unusual;
+        } else
+          goto handle_unusual;
         continue;
-      default: {
-      handle_unusual:
-        if ((tag == 0) || ((tag & 7) == 4)) {
-          CHK_(ptr);
-          ctx->SetLastTag(tag);
-          goto success;
-        }
-        ptr = UnknownFieldParse(tag,
-            _internal_metadata_.mutable_unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(),
-            ptr, ctx);
-        CHK_(ptr != nullptr);
-        continue;
-      }
+      default:
+        goto handle_unusual;
     }  // switch
+  handle_unusual:
+    if ((tag == 0) || ((tag & 7) == 4)) {
+      CHK_(ptr);
+      ctx->SetLastTag(tag);
+      goto message_done;
+    }
+    ptr = UnknownFieldParse(
+        tag,
+        _internal_metadata_.mutable_unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(),
+        ptr, ctx);
+    CHK_(ptr != nullptr);
   }  // while
-success:
+message_done:
   return ptr;
 failure:
   ptr = nullptr;
-  goto success;
+  goto message_done;
 #undef CHK_
 }
 
-::PROTOBUF_NAMESPACE_ID::uint8* KillStatistic::_InternalSerialize(
-    ::PROTOBUF_NAMESPACE_ID::uint8* target, ::PROTOBUF_NAMESPACE_ID::io::EpsCopyOutputStream* stream) const {
+uint8_t* KillStatistic::_InternalSerialize(
+    uint8_t* target, ::PROTOBUF_NAMESPACE_ID::io::EpsCopyOutputStream* stream) const {
   // @@protoc_insertion_point(serialize_to_array_start:statistics.protocol.KillStatistic)
-  ::PROTOBUF_NAMESPACE_ID::uint32 cached_has_bits = 0;
+  uint32_t cached_has_bits = 0;
   (void) cached_has_bits;
 
   // uint64 weapon_id = 1;
-  if (this->weapon_id() != 0) {
+  if (this->_internal_weapon_id() != 0) {
     target = stream->EnsureSpace(target);
     target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::WriteUInt64ToArray(1, this->_internal_weapon_id(), target);
   }
 
   // uint64 count = 2;
-  if (this->count() != 0) {
+  if (this->_internal_count() != 0) {
     target = stream->EnsureSpace(target);
     target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::WriteUInt64ToArray(2, this->_internal_count(), target);
   }
@@ -281,68 +291,49 @@ size_t KillStatistic::ByteSizeLong() const {
 // @@protoc_insertion_point(message_byte_size_start:statistics.protocol.KillStatistic)
   size_t total_size = 0;
 
-  ::PROTOBUF_NAMESPACE_ID::uint32 cached_has_bits = 0;
+  uint32_t cached_has_bits = 0;
   // Prevent compiler warnings about cached_has_bits being unused
   (void) cached_has_bits;
 
   // uint64 weapon_id = 1;
-  if (this->weapon_id() != 0) {
-    total_size += 1 +
-      ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::UInt64Size(
-        this->_internal_weapon_id());
+  if (this->_internal_weapon_id() != 0) {
+    total_size += ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::UInt64SizePlusOne(this->_internal_weapon_id());
   }
 
   // uint64 count = 2;
-  if (this->count() != 0) {
-    total_size += 1 +
-      ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::UInt64Size(
-        this->_internal_count());
+  if (this->_internal_count() != 0) {
+    total_size += ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::UInt64SizePlusOne(this->_internal_count());
   }
 
-  if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
-    return ::PROTOBUF_NAMESPACE_ID::internal::ComputeUnknownFieldsSize(
-        _internal_metadata_, total_size, &_cached_size_);
-  }
-  int cached_size = ::PROTOBUF_NAMESPACE_ID::internal::ToCachedSize(total_size);
-  SetCachedSize(cached_size);
-  return total_size;
+  return MaybeComputeUnknownFieldsSize(total_size, &_cached_size_);
 }
 
-void KillStatistic::MergeFrom(const ::PROTOBUF_NAMESPACE_ID::Message& from) {
-// @@protoc_insertion_point(generalized_merge_from_start:statistics.protocol.KillStatistic)
-  GOOGLE_DCHECK_NE(&from, this);
-  const KillStatistic* source =
-      ::PROTOBUF_NAMESPACE_ID::DynamicCastToGenerated<KillStatistic>(
-          &from);
-  if (source == nullptr) {
-  // @@protoc_insertion_point(generalized_merge_from_cast_fail:statistics.protocol.KillStatistic)
-    ::PROTOBUF_NAMESPACE_ID::internal::ReflectionOps::Merge(from, this);
-  } else {
-  // @@protoc_insertion_point(generalized_merge_from_cast_success:statistics.protocol.KillStatistic)
-    MergeFrom(*source);
-  }
+const ::PROTOBUF_NAMESPACE_ID::Message::ClassData KillStatistic::_class_data_ = {
+    ::PROTOBUF_NAMESPACE_ID::Message::CopyWithSizeCheck,
+    KillStatistic::MergeImpl
+};
+const ::PROTOBUF_NAMESPACE_ID::Message::ClassData*KillStatistic::GetClassData() const { return &_class_data_; }
+
+void KillStatistic::MergeImpl(::PROTOBUF_NAMESPACE_ID::Message* to,
+                      const ::PROTOBUF_NAMESPACE_ID::Message& from) {
+  static_cast<KillStatistic *>(to)->MergeFrom(
+      static_cast<const KillStatistic &>(from));
 }
+
 
 void KillStatistic::MergeFrom(const KillStatistic& from) {
 // @@protoc_insertion_point(class_specific_merge_from_start:statistics.protocol.KillStatistic)
   GOOGLE_DCHECK_NE(&from, this);
-  _internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
-  ::PROTOBUF_NAMESPACE_ID::uint32 cached_has_bits = 0;
+  uint32_t cached_has_bits = 0;
   (void) cached_has_bits;
 
-  if (from.weapon_id() != 0) {
+  if (from._internal_weapon_id() != 0) {
     _internal_set_weapon_id(from._internal_weapon_id());
   }
-  if (from.count() != 0) {
+  if (from._internal_count() != 0) {
     _internal_set_count(from._internal_count());
   }
-}
-
-void KillStatistic::CopyFrom(const ::PROTOBUF_NAMESPACE_ID::Message& from) {
-// @@protoc_insertion_point(generalized_copy_from_start:statistics.protocol.KillStatistic)
-  if (&from == this) return;
-  Clear();
-  MergeFrom(from);
+  _internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
 }
 
 void KillStatistic::CopyFrom(const KillStatistic& from) {
@@ -358,7 +349,7 @@ bool KillStatistic::IsInitialized() const {
 
 void KillStatistic::InternalSwap(KillStatistic* other) {
   using std::swap;
-  _internal_metadata_.Swap<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(&other->_internal_metadata_);
+  _internal_metadata_.InternalSwap(&other->_internal_metadata_);
   ::PROTOBUF_NAMESPACE_ID::internal::memswap<
       PROTOBUF_FIELD_OFFSET(KillStatistic, count_)
       + sizeof(KillStatistic::count_)
@@ -379,11 +370,14 @@ class EnemyKillStatistics::_Internal {
  public:
 };
 
-EnemyKillStatistics::EnemyKillStatistics(::PROTOBUF_NAMESPACE_ID::Arena* arena)
-  : ::PROTOBUF_NAMESPACE_ID::Message(arena),
+EnemyKillStatistics::EnemyKillStatistics(::PROTOBUF_NAMESPACE_ID::Arena* arena,
+                         bool is_message_owned)
+  : ::PROTOBUF_NAMESPACE_ID::Message(arena, is_message_owned),
   per_weapon_(arena) {
   SharedCtor();
-  RegisterArenaDtor(arena);
+  if (!is_message_owned) {
+    RegisterArenaDtor(arena);
+  }
   // @@protoc_insertion_point(arena_constructor:statistics.protocol.EnemyKillStatistics)
 }
 EnemyKillStatistics::EnemyKillStatistics(const EnemyKillStatistics& from)
@@ -396,7 +390,7 @@ EnemyKillStatistics::EnemyKillStatistics(const EnemyKillStatistics& from)
   // @@protoc_insertion_point(copy_constructor:statistics.protocol.EnemyKillStatistics)
 }
 
-void EnemyKillStatistics::SharedCtor() {
+inline void EnemyKillStatistics::SharedCtor() {
 ::memset(reinterpret_cast<char*>(this) + static_cast<size_t>(
     reinterpret_cast<char*>(&enemy_id_) - reinterpret_cast<char*>(this)),
     0, static_cast<size_t>(reinterpret_cast<char*>(&suicide_) -
@@ -405,12 +399,13 @@ void EnemyKillStatistics::SharedCtor() {
 
 EnemyKillStatistics::~EnemyKillStatistics() {
   // @@protoc_insertion_point(destructor:statistics.protocol.EnemyKillStatistics)
+  if (GetArenaForAllocation() != nullptr) return;
   SharedDtor();
   _internal_metadata_.Delete<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>();
 }
 
-void EnemyKillStatistics::SharedDtor() {
-  GOOGLE_DCHECK(GetArena() == nullptr);
+inline void EnemyKillStatistics::SharedDtor() {
+  GOOGLE_DCHECK(GetArenaForAllocation() == nullptr);
 }
 
 void EnemyKillStatistics::ArenaDtor(void* object) {
@@ -425,7 +420,7 @@ void EnemyKillStatistics::SetCachedSize(int size) const {
 
 void EnemyKillStatistics::Clear() {
 // @@protoc_insertion_point(message_clear_start:statistics.protocol.EnemyKillStatistics)
-  ::PROTOBUF_NAMESPACE_ID::uint32 cached_has_bits = 0;
+  uint32_t cached_has_bits = 0;
   // Prevent compiler warnings about cached_has_bits being unused
   (void) cached_has_bits;
 
@@ -439,19 +434,20 @@ void EnemyKillStatistics::Clear() {
 const char* EnemyKillStatistics::_InternalParse(const char* ptr, ::PROTOBUF_NAMESPACE_ID::internal::ParseContext* ctx) {
 #define CHK_(x) if (PROTOBUF_PREDICT_FALSE(!(x))) goto failure
   while (!ctx->Done(&ptr)) {
-    ::PROTOBUF_NAMESPACE_ID::uint32 tag;
+    uint32_t tag;
     ptr = ::PROTOBUF_NAMESPACE_ID::internal::ReadTag(ptr, &tag);
     switch (tag >> 3) {
       // uint64 enemy_id = 1;
       case 1:
-        if (PROTOBUF_PREDICT_TRUE(static_cast<::PROTOBUF_NAMESPACE_ID::uint8>(tag) == 8)) {
+        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 8)) {
           enemy_id_ = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint64(&ptr);
           CHK_(ptr);
-        } else goto handle_unusual;
+        } else
+          goto handle_unusual;
         continue;
       // repeated .statistics.protocol.KillStatistic per_weapon = 2;
       case 2:
-        if (PROTOBUF_PREDICT_TRUE(static_cast<::PROTOBUF_NAMESPACE_ID::uint8>(tag) == 18)) {
+        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 18)) {
           ptr -= 1;
           do {
             ptr += 1;
@@ -459,53 +455,56 @@ const char* EnemyKillStatistics::_InternalParse(const char* ptr, ::PROTOBUF_NAME
             CHK_(ptr);
             if (!ctx->DataAvailable(ptr)) break;
           } while (::PROTOBUF_NAMESPACE_ID::internal::ExpectTag<18>(ptr));
-        } else goto handle_unusual;
+        } else
+          goto handle_unusual;
         continue;
       // uint64 infight = 3;
       case 3:
-        if (PROTOBUF_PREDICT_TRUE(static_cast<::PROTOBUF_NAMESPACE_ID::uint8>(tag) == 24)) {
+        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 24)) {
           infight_ = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint64(&ptr);
           CHK_(ptr);
-        } else goto handle_unusual;
+        } else
+          goto handle_unusual;
         continue;
       // uint64 suicide = 4;
       case 4:
-        if (PROTOBUF_PREDICT_TRUE(static_cast<::PROTOBUF_NAMESPACE_ID::uint8>(tag) == 32)) {
+        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 32)) {
           suicide_ = ::PROTOBUF_NAMESPACE_ID::internal::ReadVarint64(&ptr);
           CHK_(ptr);
-        } else goto handle_unusual;
+        } else
+          goto handle_unusual;
         continue;
-      default: {
-      handle_unusual:
-        if ((tag == 0) || ((tag & 7) == 4)) {
-          CHK_(ptr);
-          ctx->SetLastTag(tag);
-          goto success;
-        }
-        ptr = UnknownFieldParse(tag,
-            _internal_metadata_.mutable_unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(),
-            ptr, ctx);
-        CHK_(ptr != nullptr);
-        continue;
-      }
+      default:
+        goto handle_unusual;
     }  // switch
+  handle_unusual:
+    if ((tag == 0) || ((tag & 7) == 4)) {
+      CHK_(ptr);
+      ctx->SetLastTag(tag);
+      goto message_done;
+    }
+    ptr = UnknownFieldParse(
+        tag,
+        _internal_metadata_.mutable_unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(),
+        ptr, ctx);
+    CHK_(ptr != nullptr);
   }  // while
-success:
+message_done:
   return ptr;
 failure:
   ptr = nullptr;
-  goto success;
+  goto message_done;
 #undef CHK_
 }
 
-::PROTOBUF_NAMESPACE_ID::uint8* EnemyKillStatistics::_InternalSerialize(
-    ::PROTOBUF_NAMESPACE_ID::uint8* target, ::PROTOBUF_NAMESPACE_ID::io::EpsCopyOutputStream* stream) const {
+uint8_t* EnemyKillStatistics::_InternalSerialize(
+    uint8_t* target, ::PROTOBUF_NAMESPACE_ID::io::EpsCopyOutputStream* stream) const {
   // @@protoc_insertion_point(serialize_to_array_start:statistics.protocol.EnemyKillStatistics)
-  ::PROTOBUF_NAMESPACE_ID::uint32 cached_has_bits = 0;
+  uint32_t cached_has_bits = 0;
   (void) cached_has_bits;
 
   // uint64 enemy_id = 1;
-  if (this->enemy_id() != 0) {
+  if (this->_internal_enemy_id() != 0) {
     target = stream->EnsureSpace(target);
     target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::WriteUInt64ToArray(1, this->_internal_enemy_id(), target);
   }
@@ -519,13 +518,13 @@ failure:
   }
 
   // uint64 infight = 3;
-  if (this->infight() != 0) {
+  if (this->_internal_infight() != 0) {
     target = stream->EnsureSpace(target);
     target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::WriteUInt64ToArray(3, this->_internal_infight(), target);
   }
 
   // uint64 suicide = 4;
-  if (this->suicide() != 0) {
+  if (this->_internal_suicide() != 0) {
     target = stream->EnsureSpace(target);
     target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::WriteUInt64ToArray(4, this->_internal_suicide(), target);
   }
@@ -542,7 +541,7 @@ size_t EnemyKillStatistics::ByteSizeLong() const {
 // @@protoc_insertion_point(message_byte_size_start:statistics.protocol.EnemyKillStatistics)
   size_t total_size = 0;
 
-  ::PROTOBUF_NAMESPACE_ID::uint32 cached_has_bits = 0;
+  uint32_t cached_has_bits = 0;
   // Prevent compiler warnings about cached_has_bits being unused
   (void) cached_has_bits;
 
@@ -554,74 +553,53 @@ size_t EnemyKillStatistics::ByteSizeLong() const {
   }
 
   // uint64 enemy_id = 1;
-  if (this->enemy_id() != 0) {
-    total_size += 1 +
-      ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::UInt64Size(
-        this->_internal_enemy_id());
+  if (this->_internal_enemy_id() != 0) {
+    total_size += ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::UInt64SizePlusOne(this->_internal_enemy_id());
   }
 
   // uint64 infight = 3;
-  if (this->infight() != 0) {
-    total_size += 1 +
-      ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::UInt64Size(
-        this->_internal_infight());
+  if (this->_internal_infight() != 0) {
+    total_size += ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::UInt64SizePlusOne(this->_internal_infight());
   }
 
   // uint64 suicide = 4;
-  if (this->suicide() != 0) {
-    total_size += 1 +
-      ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::UInt64Size(
-        this->_internal_suicide());
+  if (this->_internal_suicide() != 0) {
+    total_size += ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::UInt64SizePlusOne(this->_internal_suicide());
   }
 
-  if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
-    return ::PROTOBUF_NAMESPACE_ID::internal::ComputeUnknownFieldsSize(
-        _internal_metadata_, total_size, &_cached_size_);
-  }
-  int cached_size = ::PROTOBUF_NAMESPACE_ID::internal::ToCachedSize(total_size);
-  SetCachedSize(cached_size);
-  return total_size;
+  return MaybeComputeUnknownFieldsSize(total_size, &_cached_size_);
 }
 
-void EnemyKillStatistics::MergeFrom(const ::PROTOBUF_NAMESPACE_ID::Message& from) {
-// @@protoc_insertion_point(generalized_merge_from_start:statistics.protocol.EnemyKillStatistics)
-  GOOGLE_DCHECK_NE(&from, this);
-  const EnemyKillStatistics* source =
-      ::PROTOBUF_NAMESPACE_ID::DynamicCastToGenerated<EnemyKillStatistics>(
-          &from);
-  if (source == nullptr) {
-  // @@protoc_insertion_point(generalized_merge_from_cast_fail:statistics.protocol.EnemyKillStatistics)
-    ::PROTOBUF_NAMESPACE_ID::internal::ReflectionOps::Merge(from, this);
-  } else {
-  // @@protoc_insertion_point(generalized_merge_from_cast_success:statistics.protocol.EnemyKillStatistics)
-    MergeFrom(*source);
-  }
+const ::PROTOBUF_NAMESPACE_ID::Message::ClassData EnemyKillStatistics::_class_data_ = {
+    ::PROTOBUF_NAMESPACE_ID::Message::CopyWithSizeCheck,
+    EnemyKillStatistics::MergeImpl
+};
+const ::PROTOBUF_NAMESPACE_ID::Message::ClassData*EnemyKillStatistics::GetClassData() const { return &_class_data_; }
+
+void EnemyKillStatistics::MergeImpl(::PROTOBUF_NAMESPACE_ID::Message* to,
+                      const ::PROTOBUF_NAMESPACE_ID::Message& from) {
+  static_cast<EnemyKillStatistics *>(to)->MergeFrom(
+      static_cast<const EnemyKillStatistics &>(from));
 }
+
 
 void EnemyKillStatistics::MergeFrom(const EnemyKillStatistics& from) {
 // @@protoc_insertion_point(class_specific_merge_from_start:statistics.protocol.EnemyKillStatistics)
   GOOGLE_DCHECK_NE(&from, this);
-  _internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
-  ::PROTOBUF_NAMESPACE_ID::uint32 cached_has_bits = 0;
+  uint32_t cached_has_bits = 0;
   (void) cached_has_bits;
 
   per_weapon_.MergeFrom(from.per_weapon_);
-  if (from.enemy_id() != 0) {
+  if (from._internal_enemy_id() != 0) {
     _internal_set_enemy_id(from._internal_enemy_id());
   }
-  if (from.infight() != 0) {
+  if (from._internal_infight() != 0) {
     _internal_set_infight(from._internal_infight());
   }
-  if (from.suicide() != 0) {
+  if (from._internal_suicide() != 0) {
     _internal_set_suicide(from._internal_suicide());
   }
-}
-
-void EnemyKillStatistics::CopyFrom(const ::PROTOBUF_NAMESPACE_ID::Message& from) {
-// @@protoc_insertion_point(generalized_copy_from_start:statistics.protocol.EnemyKillStatistics)
-  if (&from == this) return;
-  Clear();
-  MergeFrom(from);
+  _internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
 }
 
 void EnemyKillStatistics::CopyFrom(const EnemyKillStatistics& from) {
@@ -637,7 +615,7 @@ bool EnemyKillStatistics::IsInitialized() const {
 
 void EnemyKillStatistics::InternalSwap(EnemyKillStatistics* other) {
   using std::swap;
-  _internal_metadata_.Swap<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(&other->_internal_metadata_);
+  _internal_metadata_.InternalSwap(&other->_internal_metadata_);
   per_weapon_.InternalSwap(&other->per_weapon_);
   ::PROTOBUF_NAMESPACE_ID::internal::memswap<
       PROTOBUF_FIELD_OFFSET(EnemyKillStatistics, suicide_)
@@ -659,11 +637,14 @@ class KillStatistics::_Internal {
  public:
 };
 
-KillStatistics::KillStatistics(::PROTOBUF_NAMESPACE_ID::Arena* arena)
-  : ::PROTOBUF_NAMESPACE_ID::Message(arena),
+KillStatistics::KillStatistics(::PROTOBUF_NAMESPACE_ID::Arena* arena,
+                         bool is_message_owned)
+  : ::PROTOBUF_NAMESPACE_ID::Message(arena, is_message_owned),
   per_enemy_(arena) {
   SharedCtor();
-  RegisterArenaDtor(arena);
+  if (!is_message_owned) {
+    RegisterArenaDtor(arena);
+  }
   // @@protoc_insertion_point(arena_constructor:statistics.protocol.KillStatistics)
 }
 KillStatistics::KillStatistics(const KillStatistics& from)
@@ -673,17 +654,18 @@ KillStatistics::KillStatistics(const KillStatistics& from)
   // @@protoc_insertion_point(copy_constructor:statistics.protocol.KillStatistics)
 }
 
-void KillStatistics::SharedCtor() {
+inline void KillStatistics::SharedCtor() {
 }
 
 KillStatistics::~KillStatistics() {
   // @@protoc_insertion_point(destructor:statistics.protocol.KillStatistics)
+  if (GetArenaForAllocation() != nullptr) return;
   SharedDtor();
   _internal_metadata_.Delete<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>();
 }
 
-void KillStatistics::SharedDtor() {
-  GOOGLE_DCHECK(GetArena() == nullptr);
+inline void KillStatistics::SharedDtor() {
+  GOOGLE_DCHECK(GetArenaForAllocation() == nullptr);
 }
 
 void KillStatistics::ArenaDtor(void* object) {
@@ -698,7 +680,7 @@ void KillStatistics::SetCachedSize(int size) const {
 
 void KillStatistics::Clear() {
 // @@protoc_insertion_point(message_clear_start:statistics.protocol.KillStatistics)
-  ::PROTOBUF_NAMESPACE_ID::uint32 cached_has_bits = 0;
+  uint32_t cached_has_bits = 0;
   // Prevent compiler warnings about cached_has_bits being unused
   (void) cached_has_bits;
 
@@ -709,12 +691,12 @@ void KillStatistics::Clear() {
 const char* KillStatistics::_InternalParse(const char* ptr, ::PROTOBUF_NAMESPACE_ID::internal::ParseContext* ctx) {
 #define CHK_(x) if (PROTOBUF_PREDICT_FALSE(!(x))) goto failure
   while (!ctx->Done(&ptr)) {
-    ::PROTOBUF_NAMESPACE_ID::uint32 tag;
+    uint32_t tag;
     ptr = ::PROTOBUF_NAMESPACE_ID::internal::ReadTag(ptr, &tag);
     switch (tag >> 3) {
       // repeated .statistics.protocol.EnemyKillStatistics per_enemy = 1;
       case 1:
-        if (PROTOBUF_PREDICT_TRUE(static_cast<::PROTOBUF_NAMESPACE_ID::uint8>(tag) == 10)) {
+        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 10)) {
           ptr -= 1;
           do {
             ptr += 1;
@@ -722,35 +704,36 @@ const char* KillStatistics::_InternalParse(const char* ptr, ::PROTOBUF_NAMESPACE
             CHK_(ptr);
             if (!ctx->DataAvailable(ptr)) break;
           } while (::PROTOBUF_NAMESPACE_ID::internal::ExpectTag<10>(ptr));
-        } else goto handle_unusual;
+        } else
+          goto handle_unusual;
         continue;
-      default: {
-      handle_unusual:
-        if ((tag == 0) || ((tag & 7) == 4)) {
-          CHK_(ptr);
-          ctx->SetLastTag(tag);
-          goto success;
-        }
-        ptr = UnknownFieldParse(tag,
-            _internal_metadata_.mutable_unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(),
-            ptr, ctx);
-        CHK_(ptr != nullptr);
-        continue;
-      }
+      default:
+        goto handle_unusual;
     }  // switch
+  handle_unusual:
+    if ((tag == 0) || ((tag & 7) == 4)) {
+      CHK_(ptr);
+      ctx->SetLastTag(tag);
+      goto message_done;
+    }
+    ptr = UnknownFieldParse(
+        tag,
+        _internal_metadata_.mutable_unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(),
+        ptr, ctx);
+    CHK_(ptr != nullptr);
   }  // while
-success:
+message_done:
   return ptr;
 failure:
   ptr = nullptr;
-  goto success;
+  goto message_done;
 #undef CHK_
 }
 
-::PROTOBUF_NAMESPACE_ID::uint8* KillStatistics::_InternalSerialize(
-    ::PROTOBUF_NAMESPACE_ID::uint8* target, ::PROTOBUF_NAMESPACE_ID::io::EpsCopyOutputStream* stream) const {
+uint8_t* KillStatistics::_InternalSerialize(
+    uint8_t* target, ::PROTOBUF_NAMESPACE_ID::io::EpsCopyOutputStream* stream) const {
   // @@protoc_insertion_point(serialize_to_array_start:statistics.protocol.KillStatistics)
-  ::PROTOBUF_NAMESPACE_ID::uint32 cached_has_bits = 0;
+  uint32_t cached_has_bits = 0;
   (void) cached_has_bits;
 
   // repeated .statistics.protocol.EnemyKillStatistics per_enemy = 1;
@@ -773,7 +756,7 @@ size_t KillStatistics::ByteSizeLong() const {
 // @@protoc_insertion_point(message_byte_size_start:statistics.protocol.KillStatistics)
   size_t total_size = 0;
 
-  ::PROTOBUF_NAMESPACE_ID::uint32 cached_has_bits = 0;
+  uint32_t cached_has_bits = 0;
   // Prevent compiler warnings about cached_has_bits being unused
   (void) cached_has_bits;
 
@@ -784,45 +767,30 @@ size_t KillStatistics::ByteSizeLong() const {
       ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::MessageSize(msg);
   }
 
-  if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
-    return ::PROTOBUF_NAMESPACE_ID::internal::ComputeUnknownFieldsSize(
-        _internal_metadata_, total_size, &_cached_size_);
-  }
-  int cached_size = ::PROTOBUF_NAMESPACE_ID::internal::ToCachedSize(total_size);
-  SetCachedSize(cached_size);
-  return total_size;
+  return MaybeComputeUnknownFieldsSize(total_size, &_cached_size_);
 }
 
-void KillStatistics::MergeFrom(const ::PROTOBUF_NAMESPACE_ID::Message& from) {
-// @@protoc_insertion_point(generalized_merge_from_start:statistics.protocol.KillStatistics)
-  GOOGLE_DCHECK_NE(&from, this);
-  const KillStatistics* source =
-      ::PROTOBUF_NAMESPACE_ID::DynamicCastToGenerated<KillStatistics>(
-          &from);
-  if (source == nullptr) {
-  // @@protoc_insertion_point(generalized_merge_from_cast_fail:statistics.protocol.KillStatistics)
-    ::PROTOBUF_NAMESPACE_ID::internal::ReflectionOps::Merge(from, this);
-  } else {
-  // @@protoc_insertion_point(generalized_merge_from_cast_success:statistics.protocol.KillStatistics)
-    MergeFrom(*source);
-  }
+const ::PROTOBUF_NAMESPACE_ID::Message::ClassData KillStatistics::_class_data_ = {
+    ::PROTOBUF_NAMESPACE_ID::Message::CopyWithSizeCheck,
+    KillStatistics::MergeImpl
+};
+const ::PROTOBUF_NAMESPACE_ID::Message::ClassData*KillStatistics::GetClassData() const { return &_class_data_; }
+
+void KillStatistics::MergeImpl(::PROTOBUF_NAMESPACE_ID::Message* to,
+                      const ::PROTOBUF_NAMESPACE_ID::Message& from) {
+  static_cast<KillStatistics *>(to)->MergeFrom(
+      static_cast<const KillStatistics &>(from));
 }
+
 
 void KillStatistics::MergeFrom(const KillStatistics& from) {
 // @@protoc_insertion_point(class_specific_merge_from_start:statistics.protocol.KillStatistics)
   GOOGLE_DCHECK_NE(&from, this);
-  _internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
-  ::PROTOBUF_NAMESPACE_ID::uint32 cached_has_bits = 0;
+  uint32_t cached_has_bits = 0;
   (void) cached_has_bits;
 
   per_enemy_.MergeFrom(from.per_enemy_);
-}
-
-void KillStatistics::CopyFrom(const ::PROTOBUF_NAMESPACE_ID::Message& from) {
-// @@protoc_insertion_point(generalized_copy_from_start:statistics.protocol.KillStatistics)
-  if (&from == this) return;
-  Clear();
-  MergeFrom(from);
+  _internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
 }
 
 void KillStatistics::CopyFrom(const KillStatistics& from) {
@@ -838,7 +806,7 @@ bool KillStatistics::IsInitialized() const {
 
 void KillStatistics::InternalSwap(KillStatistics* other) {
   using std::swap;
-  _internal_metadata_.Swap<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(&other->_internal_metadata_);
+  _internal_metadata_.InternalSwap(&other->_internal_metadata_);
   per_enemy_.InternalSwap(&other->per_enemy_);
 }
 
@@ -859,10 +827,13 @@ const ::statistics::protocol::KillStatistics&
 Statistics::_Internal::kill(const Statistics* msg) {
   return *msg->kill_;
 }
-Statistics::Statistics(::PROTOBUF_NAMESPACE_ID::Arena* arena)
-  : ::PROTOBUF_NAMESPACE_ID::Message(arena) {
+Statistics::Statistics(::PROTOBUF_NAMESPACE_ID::Arena* arena,
+                         bool is_message_owned)
+  : ::PROTOBUF_NAMESPACE_ID::Message(arena, is_message_owned) {
   SharedCtor();
-  RegisterArenaDtor(arena);
+  if (!is_message_owned) {
+    RegisterArenaDtor(arena);
+  }
   // @@protoc_insertion_point(arena_constructor:statistics.protocol.Statistics)
 }
 Statistics::Statistics(const Statistics& from)
@@ -876,18 +847,19 @@ Statistics::Statistics(const Statistics& from)
   // @@protoc_insertion_point(copy_constructor:statistics.protocol.Statistics)
 }
 
-void Statistics::SharedCtor() {
+inline void Statistics::SharedCtor() {
 kill_ = nullptr;
 }
 
 Statistics::~Statistics() {
   // @@protoc_insertion_point(destructor:statistics.protocol.Statistics)
+  if (GetArenaForAllocation() != nullptr) return;
   SharedDtor();
   _internal_metadata_.Delete<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>();
 }
 
-void Statistics::SharedDtor() {
-  GOOGLE_DCHECK(GetArena() == nullptr);
+inline void Statistics::SharedDtor() {
+  GOOGLE_DCHECK(GetArenaForAllocation() == nullptr);
   if (this != internal_default_instance()) delete kill_;
 }
 
@@ -903,11 +875,11 @@ void Statistics::SetCachedSize(int size) const {
 
 void Statistics::Clear() {
 // @@protoc_insertion_point(message_clear_start:statistics.protocol.Statistics)
-  ::PROTOBUF_NAMESPACE_ID::uint32 cached_has_bits = 0;
+  uint32_t cached_has_bits = 0;
   // Prevent compiler warnings about cached_has_bits being unused
   (void) cached_has_bits;
 
-  if (GetArena() == nullptr && kill_ != nullptr) {
+  if (GetArenaForAllocation() == nullptr && kill_ != nullptr) {
     delete kill_;
   }
   kill_ = nullptr;
@@ -917,47 +889,48 @@ void Statistics::Clear() {
 const char* Statistics::_InternalParse(const char* ptr, ::PROTOBUF_NAMESPACE_ID::internal::ParseContext* ctx) {
 #define CHK_(x) if (PROTOBUF_PREDICT_FALSE(!(x))) goto failure
   while (!ctx->Done(&ptr)) {
-    ::PROTOBUF_NAMESPACE_ID::uint32 tag;
+    uint32_t tag;
     ptr = ::PROTOBUF_NAMESPACE_ID::internal::ReadTag(ptr, &tag);
     switch (tag >> 3) {
       // .statistics.protocol.KillStatistics kill = 1;
       case 1:
-        if (PROTOBUF_PREDICT_TRUE(static_cast<::PROTOBUF_NAMESPACE_ID::uint8>(tag) == 10)) {
+        if (PROTOBUF_PREDICT_TRUE(static_cast<uint8_t>(tag) == 10)) {
           ptr = ctx->ParseMessage(_internal_mutable_kill(), ptr);
           CHK_(ptr);
-        } else goto handle_unusual;
+        } else
+          goto handle_unusual;
         continue;
-      default: {
-      handle_unusual:
-        if ((tag == 0) || ((tag & 7) == 4)) {
-          CHK_(ptr);
-          ctx->SetLastTag(tag);
-          goto success;
-        }
-        ptr = UnknownFieldParse(tag,
-            _internal_metadata_.mutable_unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(),
-            ptr, ctx);
-        CHK_(ptr != nullptr);
-        continue;
-      }
+      default:
+        goto handle_unusual;
     }  // switch
+  handle_unusual:
+    if ((tag == 0) || ((tag & 7) == 4)) {
+      CHK_(ptr);
+      ctx->SetLastTag(tag);
+      goto message_done;
+    }
+    ptr = UnknownFieldParse(
+        tag,
+        _internal_metadata_.mutable_unknown_fields<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(),
+        ptr, ctx);
+    CHK_(ptr != nullptr);
   }  // while
-success:
+message_done:
   return ptr;
 failure:
   ptr = nullptr;
-  goto success;
+  goto message_done;
 #undef CHK_
 }
 
-::PROTOBUF_NAMESPACE_ID::uint8* Statistics::_InternalSerialize(
-    ::PROTOBUF_NAMESPACE_ID::uint8* target, ::PROTOBUF_NAMESPACE_ID::io::EpsCopyOutputStream* stream) const {
+uint8_t* Statistics::_InternalSerialize(
+    uint8_t* target, ::PROTOBUF_NAMESPACE_ID::io::EpsCopyOutputStream* stream) const {
   // @@protoc_insertion_point(serialize_to_array_start:statistics.protocol.Statistics)
-  ::PROTOBUF_NAMESPACE_ID::uint32 cached_has_bits = 0;
+  uint32_t cached_has_bits = 0;
   (void) cached_has_bits;
 
   // .statistics.protocol.KillStatistics kill = 1;
-  if (this->has_kill()) {
+  if (this->_internal_has_kill()) {
     target = stream->EnsureSpace(target);
     target = ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::
       InternalWriteMessage(
@@ -976,58 +949,43 @@ size_t Statistics::ByteSizeLong() const {
 // @@protoc_insertion_point(message_byte_size_start:statistics.protocol.Statistics)
   size_t total_size = 0;
 
-  ::PROTOBUF_NAMESPACE_ID::uint32 cached_has_bits = 0;
+  uint32_t cached_has_bits = 0;
   // Prevent compiler warnings about cached_has_bits being unused
   (void) cached_has_bits;
 
   // .statistics.protocol.KillStatistics kill = 1;
-  if (this->has_kill()) {
+  if (this->_internal_has_kill()) {
     total_size += 1 +
       ::PROTOBUF_NAMESPACE_ID::internal::WireFormatLite::MessageSize(
         *kill_);
   }
 
-  if (PROTOBUF_PREDICT_FALSE(_internal_metadata_.have_unknown_fields())) {
-    return ::PROTOBUF_NAMESPACE_ID::internal::ComputeUnknownFieldsSize(
-        _internal_metadata_, total_size, &_cached_size_);
-  }
-  int cached_size = ::PROTOBUF_NAMESPACE_ID::internal::ToCachedSize(total_size);
-  SetCachedSize(cached_size);
-  return total_size;
+  return MaybeComputeUnknownFieldsSize(total_size, &_cached_size_);
 }
 
-void Statistics::MergeFrom(const ::PROTOBUF_NAMESPACE_ID::Message& from) {
-// @@protoc_insertion_point(generalized_merge_from_start:statistics.protocol.Statistics)
-  GOOGLE_DCHECK_NE(&from, this);
-  const Statistics* source =
-      ::PROTOBUF_NAMESPACE_ID::DynamicCastToGenerated<Statistics>(
-          &from);
-  if (source == nullptr) {
-  // @@protoc_insertion_point(generalized_merge_from_cast_fail:statistics.protocol.Statistics)
-    ::PROTOBUF_NAMESPACE_ID::internal::ReflectionOps::Merge(from, this);
-  } else {
-  // @@protoc_insertion_point(generalized_merge_from_cast_success:statistics.protocol.Statistics)
-    MergeFrom(*source);
-  }
+const ::PROTOBUF_NAMESPACE_ID::Message::ClassData Statistics::_class_data_ = {
+    ::PROTOBUF_NAMESPACE_ID::Message::CopyWithSizeCheck,
+    Statistics::MergeImpl
+};
+const ::PROTOBUF_NAMESPACE_ID::Message::ClassData*Statistics::GetClassData() const { return &_class_data_; }
+
+void Statistics::MergeImpl(::PROTOBUF_NAMESPACE_ID::Message* to,
+                      const ::PROTOBUF_NAMESPACE_ID::Message& from) {
+  static_cast<Statistics *>(to)->MergeFrom(
+      static_cast<const Statistics &>(from));
 }
+
 
 void Statistics::MergeFrom(const Statistics& from) {
 // @@protoc_insertion_point(class_specific_merge_from_start:statistics.protocol.Statistics)
   GOOGLE_DCHECK_NE(&from, this);
-  _internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
-  ::PROTOBUF_NAMESPACE_ID::uint32 cached_has_bits = 0;
+  uint32_t cached_has_bits = 0;
   (void) cached_has_bits;
 
-  if (from.has_kill()) {
+  if (from._internal_has_kill()) {
     _internal_mutable_kill()->::statistics::protocol::KillStatistics::MergeFrom(from._internal_kill());
   }
-}
-
-void Statistics::CopyFrom(const ::PROTOBUF_NAMESPACE_ID::Message& from) {
-// @@protoc_insertion_point(generalized_copy_from_start:statistics.protocol.Statistics)
-  if (&from == this) return;
-  Clear();
-  MergeFrom(from);
+  _internal_metadata_.MergeFrom<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(from._internal_metadata_);
 }
 
 void Statistics::CopyFrom(const Statistics& from) {
@@ -1043,7 +1001,7 @@ bool Statistics::IsInitialized() const {
 
 void Statistics::InternalSwap(Statistics* other) {
   using std::swap;
-  _internal_metadata_.Swap<::PROTOBUF_NAMESPACE_ID::UnknownFieldSet>(&other->_internal_metadata_);
+  _internal_metadata_.InternalSwap(&other->_internal_metadata_);
   swap(kill_, other->kill_);
 }
 
