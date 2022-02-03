@@ -17,7 +17,9 @@
 
 #include "doomstat.h"
 #include "g_game.h"
+#include "m_argv.h"
 #include "p_setup.h"
+#include "r_data.h"
 #include "s_sound.h"
 #include "sounds.h"
 #include "w_wad.h"
@@ -26,6 +28,25 @@
 #include "dsda/mapinfo.h"
 
 #include "legacy.h"
+
+int dsda_LegacyResolveWarp(int arg_p, int* episode, int* map) {
+  *map = 0;
+  *episode = 1;
+
+  if (gamemode == commercial)
+  {
+    if (arg_p < myargc - 1)
+      *map = atoi(myargv[arg_p + 1]);
+  }
+  else if (arg_p < myargc - 1 && sscanf(myargv[arg_p + 1], "%d", episode) == 1) {
+    *map = 1;
+
+    if (arg_p < myargc - 2)
+      sscanf(myargv[arg_p + 2], "%d", map);
+  }
+
+  return true;
+}
 
 int dsda_LegacyNextMap(int* episode, int* map) {
   static byte doom2_next[33] = {
@@ -48,14 +69,6 @@ int dsda_LegacyNextMap(int* episode, int* map) {
     { 52, 53, 59, 55, 56, 57, 58, 61, 54 },
     { 62, 63, 11, 11, 11, 11, 11, 11, 11 }, // E6M4-E6M9 shouldn't be accessible
   };
-
-  // hexen mapinfo
-  if (map_format.mapinfo) {
-    *episode = 1;
-    *map = P_GetMapNextMap(gamemap);
-
-    return true;
-  }
 
   // next arrays are 0-based, unlike gameepisode and gamemap
   *episode = gameepisode - 1;
@@ -150,9 +163,6 @@ static int dsda_CannotCLEV(int episode, int map) {
     (gamemission == pack_nerve && map > 9)
   ) return true;
 
-  if (map_format.mapinfo)
-    map = P_TranslateMap(map);
-
   // Catch invalid maps
   next = MAPNAME(episode, map);
   if (W_CheckNumForName(next) == -1) {
@@ -186,13 +196,6 @@ static inline int WRAP(int i, int w)
 
 int dsda_LegacyMapMusic(int* music_index, int* music_lump) {
   *music_lump = -1;
-
-  // hexen mapinfo
-  if (map_format.mapinfo) {
-    *music_index = gamemap;
-
-    return true;
-  }
 
   if (idmusnum != -1)
     *music_index = idmusnum; //jff 3/17/98 reload IDMUS music if not -1
@@ -274,8 +277,6 @@ int dsda_LegacyHUTitle(const char** title) {
       if (gameepisode < 6 && gamemap < 10)
         *title = LevelNames[(gameepisode - 1) * 9 + gamemap - 1];
     }
-    else if (map_format.mapinfo) // hexen mapinfo
-      *title = P_GetMapName(gamemap);
     else {
       switch (gamemode) {
         case shareware:
@@ -303,6 +304,205 @@ int dsda_LegacyHUTitle(const char** title) {
 
   if (*title == NULL)
     *title = MAPNAME(gameepisode, gamemap);
+
+  return true;
+}
+
+int dsda_LegacySkyTexture(int* sky) {
+  if (map_format.doublesky)
+    *sky = Sky1Texture;
+  else if (heretic) {
+    static const char *sky_lump_names[5] = {
+        "SKY1", "SKY2", "SKY3", "SKY1", "SKY3"
+    };
+
+    if (gameepisode < 6)
+      *sky = R_TextureNumForName(sky_lump_names[gameepisode - 1]);
+    else
+      *sky = R_TextureNumForName("SKY1");
+  }
+  else if (gamemode == commercial) {
+    *sky = R_TextureNumForName ("SKY3");
+    if (gamemap < 12)
+      *sky = R_TextureNumForName ("SKY1");
+    else
+      if (gamemap < 21)
+        *sky = R_TextureNumForName ("SKY2");
+  }
+  else {
+    switch (gameepisode) {
+      case 1:
+        *sky = R_TextureNumForName ("SKY1");
+        break;
+      case 2:
+        *sky = R_TextureNumForName ("SKY2");
+        break;
+      case 3:
+        *sky = R_TextureNumForName ("SKY3");
+        break;
+      case 4: // Special Edition sky
+        *sky = R_TextureNumForName ("SKY4");
+        break;
+    }
+  }
+
+  return true;
+}
+
+int dsda_LegacyPrepareIntermission(int* result) {
+  if (gamemode != commercial)
+    if (gamemap == 9) {
+      int i;
+
+      for (i = 0; i < g_maxplayers; i++)
+        players[i].didsecret = true;
+    }
+
+  wminfo.didsecret = players[consoleplayer].didsecret;
+
+  // wminfo.next is 0 biased, unlike gamemap
+  if (gamemode == commercial) {
+    if (secretexit)
+      switch(gamemap) {
+        case 15:
+          wminfo.next = 30;
+          break;
+        case 31:
+          wminfo.next = 31;
+          break;
+        case 2:
+          if (bfgedition && singleplayer)
+            wminfo.next = 32;
+          break;
+        case 4:
+          if (gamemission == pack_nerve && singleplayer)
+            wminfo.next = 8;
+          break;
+      }
+    else
+      switch(gamemap) {
+        case 31:
+        case 32:
+          wminfo.next = 15;
+          break;
+        case 33:
+          if (bfgedition && singleplayer)
+          {
+            wminfo.next = 2;
+            break;
+          }
+          // fallthrough
+        default:
+          wminfo.next = gamemap;
+      }
+
+    if (gamemission == pack_nerve && singleplayer && gamemap == 9)
+      wminfo.next = 4;
+  }
+  else {
+    if (secretexit)
+      wminfo.next = 8; // go to secret level
+    else if (gamemap == 9) {
+      // returning from secret level
+      if (heretic)
+      {
+        static int after_secret[5] = { 6, 4, 4, 4, 3 };
+        wminfo.next = after_secret[gameepisode - 1];
+      }
+      else
+        switch (gameepisode) {
+          case 1:
+            wminfo.next = 3;
+            break;
+          case 2:
+            wminfo.next = 5;
+            break;
+          case 3:
+            wminfo.next = 6;
+            break;
+          case 4:
+            wminfo.next = 2;
+            break;
+        }
+    }
+    else
+      wminfo.next = gamemap; // go to next level
+  }
+
+  if (gamemode == commercial) {
+    if (gamemap >= 1 && gamemap <= 34)
+      wminfo.partime = TICRATE*cpars[gamemap-1];
+  }
+  else {
+    if (gameepisode >= 1 && gameepisode <= 4 && gamemap >= 1 && gamemap <= 9)
+      wminfo.partime = TICRATE*pars[gameepisode][gamemap];
+  }
+
+  *result = 0;
+
+  return true;
+}
+
+int dsda_LegacyPrepareFinale(int* result) {
+  *result = 0;
+
+  if (gamemode == commercial && gamemission != pack_nerve) {
+    switch (gamemap) {
+      case 15:
+      case 31:
+        if (!secretexit)
+          break;
+        // fallthrough
+      case 6:
+      case 11:
+      case 20:
+      case 30:
+        *result = WD_START_FINALE;
+        break;
+    }
+  }
+  else if (gamemission == pack_nerve && singleplayer && gamemap == 8)
+    *result = WD_START_FINALE;
+  else if (gamemap == 8)
+    *result = WD_VICTORY;
+  else if (gamemap == 5 && gamemission == chex)
+    *result = WD_VICTORY;
+
+  return true;
+}
+
+void dsda_LegacyLoadMapInfo(void) {
+  return;
+}
+
+int dsda_LegacyExitPic(const char** exit_pic) {
+  *exit_pic = NULL;
+
+  return true;
+}
+
+int dsda_LegacyEnterPic(const char** enter_pic) {
+  *enter_pic = NULL;
+
+  return true;
+}
+
+int dsda_LegacyPrepareEntering(void) {
+  extern const char *el_levelname;
+  extern const char *el_levelpic;
+
+  el_levelname = NULL;
+  el_levelpic = NULL;
+
+  return true;
+}
+
+int dsda_LegacyPrepareFinished(void) {
+  extern const char *lf_levelname;
+  extern const char *lf_levelpic;
+
+  lf_levelname = NULL;
+  lf_levelpic = NULL;
 
   return true;
 }

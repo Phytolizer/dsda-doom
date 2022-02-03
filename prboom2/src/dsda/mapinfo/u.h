@@ -20,6 +20,7 @@
 
 #include "p_mobj.h"
 
+int dsda_UResolveWarp(int arg_p, int* episode, int* map);
 int dsda_UNextMap(int* episode, int* map);
 int dsda_UShowNextLocBehaviour(int* behaviour);
 int dsda_USkipDrawShowNextLoc(int* skip);
@@ -34,5 +35,13 @@ int dsda_UFTicker(void);
 void dsda_UFDrawer(void);
 int dsda_UBossAction(mobj_t* mo);
 int dsda_UHUTitle(const char** title);
+int dsda_USkyTexture(int* sky);
+int dsda_UPrepareIntermission(int* result);
+int dsda_UPrepareFinale(int* result);
+void dsda_ULoadMapInfo(void);
+int dsda_UExitPic(const char** exit_pic);
+int dsda_UEnterPic(const char** enter_pic);
+int dsda_UPrepareEntering(void);
+int dsda_UPrepareFinished(void);
 
 #endif

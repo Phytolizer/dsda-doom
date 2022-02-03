@@ -24,6 +24,12 @@
 #define WI_SHOW_NEXT_DONE     0x02
 #define WI_SHOW_NEXT_EPISODAL 0x04
 
+#define DC_VICTORY 0x01
+
+#define WD_VICTORY      0x01
+#define WD_START_FINALE 0x02
+
+void dsda_ResolveWarp(int arg_p, int* episode, int* map);
 int dsda_NameToMap(const char* name, int* episode, int* map);
 void dsda_NextMap(int* episode, int* map);
 void dsda_ShowNextLocBehaviour(int* behaviour);
@@ -39,5 +45,13 @@ int dsda_FTicker(void);
 int dsda_FDrawer(void);
 int dsda_BossAction(mobj_t* mo);
 void dsda_HUTitle(const char** title);
+int dsda_SkyTexture(void);
+void dsda_PrepareIntermission(int* behaviour);
+void dsda_PrepareFinale(int* behaviour);
+void dsda_LoadMapInfo(void);
+const char* dsda_ExitPic(void);
+const char* dsda_EnterPic(void);
+void dsda_PrepareEntering(void);
+void dsda_PrepareFinished(void);
 
 #endif

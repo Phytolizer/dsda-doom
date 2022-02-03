@@ -1075,57 +1075,7 @@ static void G_DoLoadLevel (void)
   //  setting one.
 
   skyflatnum = R_FlatNumForName(g_skyflatname);
-
-  if (map_format.doublesky)
-  {
-    skytexture = Sky1Texture;
-  }
-  else if (gamemapinfo && gamemapinfo->skytexture[0])
-  {
-    skytexture = R_TextureNumForName(gamemapinfo->skytexture);
-  }
-  else if (heretic)
-  {
-    static const char *sky_lump_names[5] = {
-        "SKY1", "SKY2", "SKY3", "SKY1", "SKY3"
-    };
-
-    if (gameepisode < 6)
-      skytexture = R_TextureNumForName(sky_lump_names[gameepisode - 1]);
-    else
-      skytexture = R_TextureNumForName("SKY1");
-  }
-  // DOOM determines the sky texture to be used
-  // depending on the current episode, and the game version.
-  else if (gamemode == commercial)
-    // || gamemode == pack_tnt   //jff 3/27/98 sorry guys pack_tnt,pack_plut
-    // || gamemode == pack_plut) //aren't gamemodes, this was matching retail
-  {
-    skytexture = R_TextureNumForName ("SKY3");
-    if (gamemap < 12)
-      skytexture = R_TextureNumForName ("SKY1");
-    else
-      if (gamemap < 21)
-        skytexture = R_TextureNumForName ("SKY2");
-  }
-  else //jff 3/27/98 and lets not forget about DOOM and Ultimate DOOM huh?
-  {
-    switch (gameepisode)
-    {
-      case 1:
-        skytexture = R_TextureNumForName ("SKY1");
-        break;
-      case 2:
-        skytexture = R_TextureNumForName ("SKY2");
-        break;
-      case 3:
-        skytexture = R_TextureNumForName ("SKY3");
-        break;
-      case 4: // Special Edition sky
-        skytexture = R_TextureNumForName ("SKY4");
-        break;
-    }//jff 3/27/98 end sky setting fix
-  }
+  skytexture = dsda_SkyTexture();
 
   // [RH] Set up details about sky rendering
   R_InitSkyMap ();
@@ -1965,6 +1915,7 @@ void G_SecretExitLevel (void)
 void G_DoCompleted (void)
 {
   int i;
+  int completed_behaviour;
 
   if (hexen)
     return Hexen_G_DoCompleted();
@@ -1982,128 +1933,14 @@ void G_DoCompleted (void)
   wminfo.last = gamemap -1;
 
   dsda_UpdateLastMapInfo();
-  if (gamemapinfo)
+
+  dsda_PrepareIntermission(&completed_behaviour);
+
+  if (completed_behaviour & DC_VICTORY)
   {
-    const char *next = "";
-    if (gamemapinfo->endpic[0] && (strcmp(gamemapinfo->endpic, "-") != 0) && gamemapinfo->nointermission)
-    {
-      gameaction = ga_victory;
-      return;
-    }
-    if (secretexit) next = gamemapinfo->nextsecret;
-    if (next[0] == 0) next = gamemapinfo->nextmap;
-    if (next[0])
-    {
-      G_ValidateMapName(next, &wminfo.nextep, &wminfo.next);
-      wminfo.nextep--;
-      wminfo.next--;
-      // episode change
-      if (wminfo.nextep != wminfo.epsd)
-      {
-        for (i = 0; i < g_maxplayers; i++)
-          players[i].didsecret = false;
-      }
-      wminfo.didsecret = players[consoleplayer].didsecret;
-      wminfo.partime = gamemapinfo->partime;
-      goto frommapinfo;  // skip past the default setup.
-    }
+    gameaction = ga_victory;
+    return;
   }
-
-  if (gamemode != commercial) // kilough 2/7/98
-  {
-    if (gamemap == 9)
-    {
-      for (i = 0; i < g_maxplayers; i++)
-        players[i].didsecret = true;
-    }
-  }
-
-  wminfo.didsecret = players[consoleplayer].didsecret;
-
-  // wminfo.next is 0 biased, unlike gamemap
-  if (gamemode == commercial)
-    {
-      if (secretexit)
-        switch(gamemap)
-          {
-          case 15:
-            wminfo.next = 30; break;
-          case 31:
-            wminfo.next = 31; break;
-          case 2:
-            if (bfgedition && singleplayer)
-              wminfo.next = 32;
-            break;
-          case 4:
-            if (gamemission == pack_nerve && singleplayer)
-              wminfo.next = 8;
-            break;
-          }
-      else
-        switch(gamemap)
-          {
-          case 31:
-          case 32:
-            wminfo.next = 15; break;
-          case 33:
-            if (bfgedition && singleplayer)
-            {
-              wminfo.next = 2;
-              break;
-            }
-            // fallthrough
-          default:
-            wminfo.next = gamemap;
-          }
-      if (gamemission == pack_nerve && singleplayer && gamemap == 9)
-        wminfo.next = 4;
-    }
-  else
-    {
-      if (secretexit)
-        wminfo.next = 8;  // go to secret level
-      else
-        if (gamemap == 9)
-          {
-            // returning from secret level
-            if (heretic)
-            {
-              static int after_secret[5] = { 6, 4, 4, 4, 3 };
-              wminfo.next = after_secret[gameepisode - 1];
-            }
-            else
-              switch (gameepisode)
-                {
-                case 1:
-                  wminfo.next = 3;
-                  break;
-                case 2:
-                  wminfo.next = 5;
-                  break;
-                case 3:
-                  wminfo.next = 6;
-                  break;
-                case 4:
-                  wminfo.next = 2;
-                  break;
-                }
-          }
-        else
-          wminfo.next = gamemap;          // go to next level
-    }
-
-  if ( gamemode == commercial )
-  {
-    if (gamemap >= 1 && gamemap <= 34)
-      wminfo.partime = TICRATE*cpars[gamemap-1];
-  }
-  else
-  {
-    if (gameepisode >= 1 && gameepisode <= 4 && gamemap >= 1 && gamemap <= 9)
-      wminfo.partime = TICRATE*pars[gameepisode][gamemap];
-  }
-
-frommapinfo:
 
   dsda_UpdateNextMapInfo();
   wminfo.maxkills = totalkills;
@@ -2155,59 +1992,28 @@ frommapinfo:
 
 void G_WorldDone (void)
 {
+  int done_behaviour;
+
   gameaction = ga_worlddone;
 
   if (secretexit)
     players[consoleplayer].didsecret = true;
 
-  if (gamemapinfo)
+  dsda_PrepareFinale(&done_behaviour);
+
+  if (done_behaviour & WD_VICTORY)
   {
-    if (gamemapinfo->intertextsecret && secretexit)
-    {
-      if (gamemapinfo->intertextsecret[0] != '-') // '-' means that any default intermission was cleared.
-      F_StartFinale();
+    gameaction = ga_victory;
 
-      return;
-    }
-    else if (gamemapinfo->intertext && !secretexit)
-    {
-      if (gamemapinfo->intertext[0] != '-') // '-' means that any default intermission was cleared.
-      F_StartFinale();
-
-      return;
-    }
-    else if (gamemapinfo->endpic[0] && (strcmp(gamemapinfo->endpic, "-") != 0))
-    {
-      // game ends without a status screen.
-      gameaction = ga_victory;
-      return;
-    }
-    // if nothing applied, use the defaults.
+    return;
   }
 
-  if (gamemode == commercial && gamemission != pack_nerve)
-    {
-      switch (gamemap)
-        {
-        case 15:
-        case 31:
-          if (!secretexit)
-            break;
-          // fallthrough
-        case 6:
-        case 11:
-        case 20:
-        case 30:
-          F_StartFinale ();
-          break;
-        }
-    }
-  else if (gamemission == pack_nerve && singleplayer && gamemap == 8)
-         F_StartFinale ();
-  else if (gamemap == 8)
-    gameaction = ga_victory; // cph - after ExM8 summary screen, show victory stuff
-  else if (gamemap == 5 && gamemission == chex)
-    gameaction = ga_victory;
+  if (done_behaviour & WD_START_FINALE)
+  {
+    F_StartFinale();
+
+    return;
+  }
 }
 
 void G_DoWorldDone (void)

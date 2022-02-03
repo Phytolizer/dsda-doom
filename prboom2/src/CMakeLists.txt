@@ -50,6 +50,8 @@ set(COMMON_SRC
     dsda/map_format.h
     dsda/mapinfo.c
     dsda/mapinfo.h
+    dsda/mapinfo/hexen.c
+    dsda/mapinfo/hexen.h
     dsda/mapinfo/legacy.c
     dsda/mapinfo/legacy.h
     dsda/mapinfo/u.c
@@ -116,7 +118,6 @@ set(COMMON_SRC
     e6y.h
     f_finale.c
     f_finale.h
-    f_finale2.c
     f_wipe.c
     f_wipe.h
     g_game.c

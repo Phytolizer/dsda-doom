@@ -124,7 +124,6 @@ byte     *map_subsectors;
 
 #define UNKNOWN_MAP_NAME "DEVELOPMENT MAP"
 #define DEFAULT_SKY_NAME "SKY1"
-#define DEFAULT_SONG_LUMP "DEFSONG"
 #define DEFAULT_FADE_TABLE "COLORMAP"
 
 typedef struct mapInfo_s
@@ -132,7 +131,6 @@ typedef struct mapInfo_s
     short cluster;
     short warpTrans;
     short nextMap;
-    short cdTrack;
     char name[32];
     short sky1Texture;
     short sky2Texture;
@@ -144,7 +142,7 @@ typedef struct mapInfo_s
     char songLump[10];
 } mapInfo_t;
 
-int MapCount;
+int MapCount = 98;
 
 static mapInfo_t MapInfo[99];
 
@@ -184,8 +182,6 @@ static int MapCmdIDs[] = {
     MCMD_CD_INTERTRACK,
     MCMD_CD_TITLETRACK
 };
-
-static int cd_NonLevelTracks[6];        // Non-level specific song cd track numbers
 
 static int QualifyMap(int map);
 // end hexen
@@ -3394,7 +3390,6 @@ static void InitMapInfo(void)
     info->cluster = 0;
     info->warpTrans = 0;
     info->nextMap = 1;          // Always go to map 1 if not specified
-    info->cdTrack = 1;
     info->sky1Texture = R_TextureNumForName(default_sky_name);
     info->sky2Texture = info->sky1Texture;
     info->sky1ScrollDelta = 0;
@@ -3461,7 +3456,7 @@ static void InitMapInfo(void)
                     break;
                 case MCMD_CDTRACK:
                     SC_MustGetNumber();
-                    info->cdTrack = sc_Number;
+                    // not used
                     break;
                 case MCMD_SKY1:
                     SC_MustGetString();
@@ -3492,8 +3487,7 @@ static void InitMapInfo(void)
                 case MCMD_CD_INTERTRACK:
                 case MCMD_CD_TITLETRACK:
                     SC_MustGetNumber();
-                    cd_NonLevelTracks[mcmdValue - MCMD_CD_STARTTRACK] =
-                        sc_Number;
+                    // not used
                     break;
             }
         }
@@ -3506,11 +3500,6 @@ static void InitMapInfo(void)
 int P_GetMapCluster(int map)
 {
     return MapInfo[QualifyMap(map)].cluster;
-}
-
-int P_GetMapCDTrack(int map)
-{
-    return MapInfo[QualifyMap(map)].cdTrack;
 }
 
 int P_GetMapWarpTrans(int map)
@@ -3580,7 +3569,7 @@ dboolean P_GetMapFadeTable(int map)
 
 char *P_GetMapSongLump(int map)
 {
-    if (!strcasecmp(MapInfo[QualifyMap(map)].songLump, DEFAULT_SONG_LUMP))
+    if (!*MapInfo[QualifyMap(map)].songLump)
     {
         return NULL;
     }
@@ -3600,50 +3589,7 @@ void P_PutMapSongLump(int map, char *lumpName)
                  sizeof(MapInfo[map].songLump));
 }
 
-int P_GetCDStartTrack(void)
-{
-    return cd_NonLevelTracks[MCMD_CD_STARTTRACK - MCMD_CD_STARTTRACK];
-}
-
-int P_GetCDEnd1Track(void)
-{
-    return cd_NonLevelTracks[MCMD_CD_END1TRACK - MCMD_CD_STARTTRACK];
-}
-
-int P_GetCDEnd2Track(void)
-{
-    return cd_NonLevelTracks[MCMD_CD_END2TRACK - MCMD_CD_STARTTRACK];
-}
-
-int P_GetCDEnd3Track(void)
-{
-    return cd_NonLevelTracks[MCMD_CD_END3TRACK - MCMD_CD_STARTTRACK];
-}
-
-int P_GetCDIntermissionTrack(void)
-{
-    return cd_NonLevelTracks[MCMD_CD_INTERTRACK - MCMD_CD_STARTTRACK];
-}
-
-int P_GetCDTitleTrack(void)
-{
-    return cd_NonLevelTracks[MCMD_CD_TITLETRACK - MCMD_CD_STARTTRACK];
-}
-
 static int QualifyMap(int map)
 {
     return (map < 1 || map > MapCount) ? 0 : map;
-}
-
-// Special early initializer needed to start sound before R_Init()
-void InitMapMusicInfo(void)
-{
-    int i;
-
-    for (i = 0; i < 99; i++)
-    {
-        M_StringCopy(MapInfo[i].songLump, DEFAULT_SONG_LUMP,
-                     sizeof(MapInfo[i].songLump));
-    }
-    MapCount = 98;
 }
