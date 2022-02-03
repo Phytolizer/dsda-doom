@@ -29,6 +29,7 @@
 #define WD_VICTORY      0x01
 #define WD_START_FINALE 0x02
 
+void dsda_FirstMap(int* episode, int* map);
 void dsda_ResolveWarp(int arg_p, int* episode, int* map);
 int dsda_NameToMap(const char* name, int* episode, int* map);
 void dsda_NextMap(int* episode, int* map);
@@ -46,6 +47,7 @@ int dsda_FDrawer(void);
 int dsda_BossAction(mobj_t* mo);
 void dsda_HUTitle(const char** title);
 int dsda_SkyTexture(void);
+void dsda_PrepareInitNew(void);
 void dsda_PrepareIntermission(int* behaviour);
 void dsda_PrepareFinale(int* behaviour);
 void dsda_LoadMapInfo(void);

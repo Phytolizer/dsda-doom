@@ -20,6 +20,7 @@
 
 #include "p_mobj.h"
 
+int dsda_LegacyFirstMap(int* episode, int* map);
 int dsda_LegacyResolveWarp(int arg_p, int* episode, int* map);
 int dsda_LegacyNextMap(int* episode, int* map);
 int dsda_LegacyShowNextLocBehaviour(int* behaviour);
@@ -36,6 +37,7 @@ void dsda_LegacyFDrawer(void);
 int dsda_LegacyBossAction(mobj_t* mo);
 int dsda_LegacyHUTitle(const char** title);
 int dsda_LegacySkyTexture(int* sky);
+int dsda_LegacyPrepareInitNew(void);
 int dsda_LegacyPrepareIntermission(int* result);
 int dsda_LegacyPrepareFinale(int* result);
 void dsda_LegacyLoadMapInfo(void);

@@ -55,6 +55,10 @@ static struct MapEntry* dsda_UMapEntry(int gameepisode, int gamemap)
   return NULL;
 }
 
+int dsda_UFirstMap(int* episode, int* map) {
+  return false;
+}
+
 int dsda_UResolveWarp(int arg_p, int* episode, int* map) {
   return false;
 }
@@ -363,6 +367,10 @@ int dsda_USkyTexture(int* sky) {
   *sky = R_TextureNumForName(gamemapinfo->skytexture);
 
   return true;
+}
+
+int dsda_UPrepareInitNew(void) {
+  return false;
 }
 
 int dsda_UPrepareIntermission(int* result) {
