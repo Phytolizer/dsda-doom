@@ -21,6 +21,7 @@
 #include "p_mobj.h"
 
 int dsda_LegacyFirstMap(int* episode, int* map);
+int dsda_LegacyNewGameMap(int* episode, int* map);
 int dsda_LegacyResolveWarp(int arg_p, int* episode, int* map);
 int dsda_LegacyNextMap(int* episode, int* map);
 int dsda_LegacyShowNextLocBehaviour(int* behaviour);
@@ -29,6 +30,8 @@ void dsda_LegacyUpdateMapInfo(void);
 void dsda_LegacyUpdateLastMapInfo(void);
 void dsda_LegacyUpdateNextMapInfo(void);
 int dsda_LegacyResolveCLEV(int* clev, int* episode, int* map);
+int dsda_LegacyResolveINIT(int* init);
+int dsda_LegacyMusicIndexToLumpNum(int* lump, int music_index);
 int dsda_LegacyMapMusic(int* music_index, int* music_lump);
 int dsda_LegacyInterMusic(int* music_index, int* music_lump);
 int dsda_LegacyStartFinale(void);
@@ -45,5 +48,7 @@ int dsda_LegacyExitPic(const char** exit_pic);
 int dsda_LegacyEnterPic(const char** enter_pic);
 int dsda_LegacyPrepareEntering(void);
 int dsda_LegacyPrepareFinished(void);
+int dsda_LegacyMapLightning(int* lightning, int map);
+int dsda_LegacyApplyFadeTable(void);
 
 #endif

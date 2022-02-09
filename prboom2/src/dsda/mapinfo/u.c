@@ -59,6 +59,10 @@ int dsda_UFirstMap(int* episode, int* map) {
   return false;
 }
 
+int dsda_UNewGameMap(int* episode, int* map) {
+  return false;
+}
+
 int dsda_UResolveWarp(int arg_p, int* episode, int* map) {
   return false;
 }
@@ -128,6 +132,14 @@ int dsda_UResolveCLEV(int* clev, int* episode, int* map) {
     return true;
   }
 
+  return false;
+}
+
+int dsda_UResolveINIT(int* init) {
+  return false;
+}
+
+int dsda_UMusicIndexToLumpNum(int* lump, int music_index) {
   return false;
 }
 
@@ -452,6 +464,9 @@ int dsda_UPrepareFinale(int* result) {
 void dsda_ULoadMapInfo(void) {
   int p;
 
+  if (M_CheckParm("-nomapinfo"))
+    return;
+
   p = -1;
   while ((p = W_ListNumFromName("UMAPINFO", p)) >= 0) {
     const unsigned char * lump = (const unsigned char *) W_CacheLumpNum(p);
@@ -520,5 +535,13 @@ int dsda_UPrepareFinished(void) {
     return true;
   }
 
+  return false;
+}
+
+int dsda_UMapLightning(int* lightning, int map) {
+  return false;
+}
+
+int dsda_UApplyFadeTable(void) {
   return false;
 }

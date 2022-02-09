@@ -21,6 +21,7 @@
 #include "p_mobj.h"
 
 int dsda_UFirstMap(int* episode, int* map);
+int dsda_UNewGameMap(int* episode, int* map);
 int dsda_UResolveWarp(int arg_p, int* episode, int* map);
 int dsda_UNextMap(int* episode, int* map);
 int dsda_UShowNextLocBehaviour(int* behaviour);
@@ -29,6 +30,8 @@ void dsda_UUpdateMapInfo(void);
 void dsda_UUpdateLastMapInfo(void);
 void dsda_UUpdateNextMapInfo(void);
 int dsda_UResolveCLEV(int* clev, int* episode, int* map);
+int dsda_UResolveINIT(int* init);
+int dsda_UMusicIndexToLumpNum(int* lump, int music_index);
 int dsda_UMapMusic(int* music_index, int* music_lump);
 int dsda_UInterMusic(int* music_index, int* music_lump);
 int dsda_UStartFinale(void);
@@ -45,5 +48,7 @@ int dsda_UExitPic(const char** exit_pic);
 int dsda_UEnterPic(const char** enter_pic);
 int dsda_UPrepareEntering(void);
 int dsda_UPrepareFinished(void);
+int dsda_UMapLightning(int* lightning, int map);
+int dsda_UApplyFadeTable(void);
 
 #endif

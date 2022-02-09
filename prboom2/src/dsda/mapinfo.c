@@ -66,6 +66,16 @@ void dsda_FirstMap(int* episode, int* map) {
   dsda_LegacyFirstMap(episode, map);
 }
 
+void dsda_NewGameMap(int* episode, int* map) {
+  if (dsda_HexenNewGameMap(episode, map))
+    return;
+
+  if (dsda_UNewGameMap(episode, map))
+    return;
+
+  dsda_LegacyNewGameMap(episode, map);
+}
+
 void dsda_ResolveWarp(int arg_p, int* episode, int* map) {
   if (dsda_HexenResolveWarp(arg_p, episode, map))
     return;
@@ -140,6 +150,34 @@ int dsda_ResolveCLEV(int* episode, int* map) {
   dsda_LegacyResolveCLEV(&clev, episode, map);
 
   return clev;
+}
+
+int dsda_ResolveINIT(void) {
+  int init;
+
+  if (dsda_HexenResolveINIT(&init))
+    return init;
+
+  if (dsda_UResolveINIT(&init))
+    return init;
+
+  dsda_LegacyResolveINIT(&init);
+
+  return init;
+}
+
+int dsda_MusicIndexToLumpNum(int music_index) {
+  int lump;
+
+  if (dsda_HexenMusicIndexToLumpNum(&lump, music_index))
+    return lump;
+
+  if (dsda_UMusicIndexToLumpNum(&lump, music_index))
+    return lump;
+
+  dsda_LegacyMusicIndexToLumpNum(&lump, music_index);
+
+  return lump;
 }
 
 void dsda_MapMusic(int* music_index, int* music_lump) {
@@ -336,4 +374,28 @@ void dsda_PrepareFinished(void) {
     return;
 
   dsda_LegacyPrepareFinished();
+}
+
+int dsda_MapLightning(int map) {
+  int lightning;
+
+  if (dsda_HexenMapLightning(&lightning, map))
+    return lightning;
+
+  if (dsda_UMapLightning(&lightning, map))
+    return lightning;
+
+  dsda_LegacyMapLightning(&lightning, map);
+
+  return lightning;
+}
+
+void dsda_ApplyFadeTable(void) {
+  if (dsda_HexenApplyFadeTable())
+    return;
+
+  if (dsda_UApplyFadeTable())
+    return;
+
+  dsda_LegacyApplyFadeTable();
 }

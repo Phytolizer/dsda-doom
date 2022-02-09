@@ -62,6 +62,10 @@ int dsda_LegacyFirstMap(int* episode, int* map) {
   return true;
 }
 
+int dsda_LegacyNewGameMap(int* episode, int* map) {
+  return true;
+}
+
 int dsda_LegacyResolveWarp(int arg_p, int* episode, int* map) {
   *map = 0;
   *episode = 1;
@@ -215,6 +219,25 @@ int dsda_LegacyResolveCLEV(int* clev, int* episode, int* map) {
 
     *clev = true;
   }
+
+  return true;
+}
+
+int dsda_LegacyResolveINIT(int* init) {
+  *init = false;
+
+  return true;
+}
+
+int dsda_LegacyMusicIndexToLumpNum(int* lump, int music_index) {
+  char name[9];
+  const char* format;
+
+  format = raven ? "%s" : "d_%s";
+
+  sprintf(name, format, S_music[music_index].name);
+
+  *lump = W_GetNumForName(name);
 
   return true;
 }
@@ -541,5 +564,15 @@ int dsda_LegacyPrepareFinished(void) {
   lf_levelname = NULL;
   lf_levelpic = NULL;
 
+  return true;
+}
+
+int dsda_LegacyMapLightning(int* lightning, int map) {
+  *lightning = false;
+
+  return true;
+}
+
+int dsda_LegacyApplyFadeTable(void) {
   return true;
 }

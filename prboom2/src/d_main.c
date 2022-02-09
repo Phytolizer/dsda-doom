@@ -872,9 +872,11 @@ void CheckIWAD(const char *iwadname,GameMode_t *gmode,dboolean *hassec)
         length = header.numlumps;
         fileinfo = malloc(length*sizeof(filelump_t));
         if (fseek (fp, header.infotableofs, SEEK_SET) ||
-            fread (fileinfo, sizeof(filelump_t), length, fp) != length ||
-            fclose(fp))
+            fread (fileinfo, sizeof(filelump_t), length, fp) != length)
+        {
+          fclose(fp);
           I_Error("CheckIWAD: failed to read directory %s",iwadname);
+        }
 
         // scan directory for levelname lumps
         while (length--)
@@ -2131,28 +2133,11 @@ static void D_DoomMainSetup(void)
     }
   }
 
-  if (!M_CheckParm("-nomapinfo"))
-  {
-    dsda_LoadMapInfo();
-  }
-
   PostProcessDeh();
   dsda_AppendZDoomMobjInfo();
   dsda_ApplyDefaultMapFormat();
 
   V_InitColorTranslation(); //jff 4/24/98 load color translation lumps
-
-  // killough 2/22/98: copyright / "modified game" / SPA banners removed
-
-  // Ty 04/08/98 - Add 5 lines of misc. data, only if nonblank
-  // The expectation is that these will be set in a .bex file
-  //jff 9/3/98 use logical output routine
-  if (*startup1) lprintf(LO_INFO,"%s",startup1);
-  if (*startup2) lprintf(LO_INFO,"%s",startup2);
-  if (*startup3) lprintf(LO_INFO,"%s",startup3);
-  if (*startup4) lprintf(LO_INFO,"%s",startup4);
-  if (*startup5) lprintf(LO_INFO,"%s",startup5);
-  // End new startup strings
 
   //jff 9/3/98 use logical output routine
   lprintf(LO_INFO,"M_Init: Init miscellaneous info.\n");
@@ -2171,6 +2156,8 @@ static void D_DoomMainSetup(void)
   //jff 9/3/98 use logical output routine
   lprintf(LO_INFO,"R_Init: Init DOOM refresh daemon - ");
   R_Init();
+
+  dsda_LoadMapInfo();
 
   //jff 9/3/98 use logical output routine
   lprintf(LO_INFO,"\nP_Init: Init Playloop state.\n");

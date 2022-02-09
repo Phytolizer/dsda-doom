@@ -21,6 +21,7 @@
 #include "p_mobj.h"
 
 int dsda_HexenFirstMap(int* episode, int* map);
+int dsda_HexenNewGameMap(int* episode, int* map);
 int dsda_HexenResolveWarp(int arg_p, int* episode, int* map);
 int dsda_HexenNextMap(int* episode, int* map);
 int dsda_HexenShowNextLocBehaviour(int* behaviour);
@@ -29,6 +30,8 @@ void dsda_HexenUpdateMapInfo(void);
 void dsda_HexenUpdateLastMapInfo(void);
 void dsda_HexenUpdateNextMapInfo(void);
 int dsda_HexenResolveCLEV(int* clev, int* episode, int* map);
+int dsda_HexenResolveINIT(int* init);
+int dsda_HexenMusicIndexToLumpNum(int* lump, int music_index);
 int dsda_HexenMapMusic(int* music_index, int* music_lump);
 int dsda_HexenInterMusic(int* music_index, int* music_lump);
 int dsda_HexenStartFinale(void);
@@ -45,5 +48,7 @@ int dsda_HexenExitPic(const char** exit_pic);
 int dsda_HexenEnterPic(const char** enter_pic);
 int dsda_HexenPrepareEntering(void);
 int dsda_HexenPrepareFinished(void);
+int dsda_HexenMapLightning(int* lightning, int map);
+int dsda_HexenApplyFadeTable(void);
 
 #endif
