@@ -75,6 +75,8 @@ static int MapCount = 98;
 
 static mapInfo_t MapInfo[99];
 
+static mapInfo_t *CurrentMap = MapInfo;
+
 static const char *MapCmdNames[] = {
   "SKY1",
   "SKY2",
@@ -112,21 +114,11 @@ static int MapCmdIDs[] = {
   MCMD_CD_TITLETRACK
 };
 
-static int QualifyMap(int map);
-
-int P_GetMapCluster(int map) {
-  return MapInfo[QualifyMap(map)].cluster;
+static int QualifyMap(int map) {
+  return (map < 1 || map > MapCount) ? 0 : map;
 }
 
-int P_GetMapWarpTrans(int map) {
-  return MapInfo[QualifyMap(map)].warpTrans;
-}
-
-int P_GetMapNextMap(int map) {
-  return MapInfo[QualifyMap(map)].nextMap;
-}
-
-int P_TranslateMap(int map) {
+static int P_TranslateMap(int map) {
   int i;
 
   for (i = 1; i < 99; i++)
@@ -136,45 +128,6 @@ int P_TranslateMap(int map) {
   return -1;
 }
 
-int P_GetMapSky1Texture(int map) {
-  return MapInfo[QualifyMap(map)].sky1Texture;
-}
-
-int P_GetMapSky2Texture(int map) {
-  return MapInfo[QualifyMap(map)].sky2Texture;
-}
-
-char *P_GetMapName(int map) {
-  return MapInfo[QualifyMap(map)].name;
-}
-
-fixed_t P_GetMapSky1ScrollDelta(int map) {
-  return MapInfo[QualifyMap(map)].sky1ScrollDelta;
-}
-
-fixed_t P_GetMapSky2ScrollDelta(int map) {
-  return MapInfo[QualifyMap(map)].sky2ScrollDelta;
-}
-
-dboolean P_GetMapDoubleSky(int map) {
-  return MapInfo[QualifyMap(map)].doubleSky;
-}
-
-dboolean P_GetMapLightning(int map) {
-  return MapInfo[QualifyMap(map)].lightning;
-}
-
-dboolean P_GetMapFadeTable(int map) {
-  return MapInfo[QualifyMap(map)].fadetable;
-}
-
-char *P_GetMapSongLump(int map) {
-    if (!*MapInfo[QualifyMap(map)].songLump)
-      return NULL;
-    else
-      return MapInfo[QualifyMap(map)].songLump;
-}
-
 void P_PutMapSongLump(int map, char *lumpName) {
   if (map < 1 || map > MapCount)
     return;
@@ -182,11 +135,6 @@ void P_PutMapSongLump(int map, char *lumpName) {
   M_StringCopy(MapInfo[map].songLump, lumpName,
                sizeof(MapInfo[map].songLump));
 }
-
-static int QualifyMap(int map) {
-  return (map < 1 || map > MapCount) ? 0 : map;
-}
-
 
 int dsda_HexenFirstMap(int* episode, int* map) {
   if (!map_format.mapinfo)
@@ -236,7 +184,7 @@ int dsda_HexenNextMap(int* episode, int* map) {
     return false;
 
   *episode = 1;
-  *map = P_GetMapNextMap(gamemap);
+  *map = CurrentMap->nextMap;
 
   return true;
 }
@@ -250,7 +198,7 @@ int dsda_HexenSkipDrawShowNextLoc(int* skip) {
 }
 
 void dsda_HexenUpdateMapInfo(void) {
-  // TODO
+  CurrentMap = &MapInfo[QualifyMap(gamemap)];
 }
 
 void dsda_HexenUpdateLastMapInfo(void) {
@@ -287,7 +235,7 @@ int dsda_HexenResolveINIT(int* init) {
 
   partial_reset = true;
 
-  G_DeferedInitNew(gameskill, gameepisode, P_GetMapWarpTrans(gamemap));
+  G_DeferedInitNew(gameskill, gameepisode, CurrentMap->warpTrans);
 
   *init = true;
 
@@ -303,7 +251,10 @@ int dsda_HexenMusicIndexToLumpNum(int* lump, int music_index) {
   if (music_index >= hexen_mus_hub)
     return false;
 
-  lump_name = P_GetMapSongLump(music_index);
+  if (!*MapInfo[QualifyMap(music_index)].songLump)
+    lump_name = NULL;
+  else
+    lump_name = MapInfo[QualifyMap(music_index)].songLump;
 
   if (!lump_name)
     *lump = 0;
@@ -350,7 +301,7 @@ int dsda_HexenHUTitle(const char** title) {
   *title = NULL;
 
   if (gamestate == GS_LEVEL && gamemap > 0 && gameepisode > 0)
-    *title = P_GetMapName(gamemap);
+    *title = CurrentMap->name;
 
   if (*title == NULL)
     *title = MAPNAME(gameepisode, gamemap);
@@ -533,11 +484,11 @@ int dsda_HexenPrepareFinished(void) {
   return false; // TODO
 }
 
-int dsda_HexenMapLightning(int* lightning, int map) {
+int dsda_HexenMapLightning(int* lightning) {
   if (!map_format.mapinfo)
     return false;
 
-  *lightning = P_GetMapLightning(map);
+  *lightning = CurrentMap->lightning;
 
   return true;
 }
@@ -551,7 +502,7 @@ int dsda_HexenApplyFadeTable(void) {
   if (!map_format.mapinfo)
     return false;
 
-  fade_lump = P_GetMapFadeTable(gamemap);
+  fade_lump = CurrentMap->fadetable;
 
   colormaps[0] = (const lighttable_t *) W_CacheLumpNum(fade_lump);
 
@@ -559,6 +510,51 @@ int dsda_HexenApplyFadeTable(void) {
     LevelUseFullBright = true;
   else
     LevelUseFullBright = false; // Probably fog ... don't use fullbright sprites
+
+  return true;
+}
+
+int dsda_HexenMapCluster(int* cluster, int map) {
+  if (!map_format.mapinfo)
+    return false;
+
+  *cluster = MapInfo[QualifyMap(map)].cluster;
+
+  return true;
+}
+
+int dsda_HexenSky1Texture(short* texture) {
+  if (!map_format.mapinfo)
+    return false;
+
+  *texture = CurrentMap->sky1Texture;
+
+  return true;
+}
+
+int dsda_HexenSky2Texture(short* texture) {
+  if (!map_format.mapinfo)
+    return false;
+
+  *texture = CurrentMap->sky2Texture;
+
+  return true;
+}
+
+int dsda_HexenInitSky(void) {
+  extern fixed_t Sky1ScrollDelta;
+  extern fixed_t Sky2ScrollDelta;
+
+  if (!map_format.mapinfo)
+    return false;
+
+  Sky1Texture = CurrentMap->sky1Texture;
+  Sky2Texture = CurrentMap->sky2Texture;
+  Sky1ScrollDelta = CurrentMap->sky1ScrollDelta;
+  Sky2ScrollDelta = CurrentMap->sky2ScrollDelta;
+  Sky1ColumnOffset = 0;
+  Sky2ColumnOffset = 0;
+  DoubleSky = CurrentMap->doubleSky;
 
   return true;
 }
