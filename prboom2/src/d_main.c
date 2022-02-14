@@ -100,6 +100,7 @@
 #include "dsda/mapinfo.h"
 #include "dsda/mobjinfo.h"
 #include "dsda/settings.h"
+#include "dsda/sndinfo.h"
 #include "dsda/time.h"
 
 #include "heretic/mn_menu.h"
@@ -2143,10 +2144,7 @@ static void D_DoomMainSetup(void)
   lprintf(LO_INFO,"M_Init: Init miscellaneous info.\n");
   M_Init();
 
-  if (map_format.sndinfo)
-  {
-    S_InitScript();
-  }
+  dsda_LoadSndInfo();
 
   if (map_format.sndseq)
   {
