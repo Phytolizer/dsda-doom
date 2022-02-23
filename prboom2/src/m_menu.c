@@ -48,6 +48,7 @@
 #include <stdio.h>
 #include <fcntl.h>
 
+#include "gl_struct.h"
 #include "doomdef.h"
 #include "doomstat.h"
 #include "dstrings.h"

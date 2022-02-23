@@ -35,6 +35,9 @@
 #define _GL_STRUCT_H
 
 #include <SDL_opengl.h>
+#include "doomtype.h"
+#include "r_defs.h"
+#include "d_player.h"
 
 extern int nodesVersion;
 
