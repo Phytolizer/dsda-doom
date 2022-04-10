@@ -78,7 +78,6 @@
 #include "r_things.h"
 #include "r_sky.h"
 #include "am_map.h"
-#include "hu_tracers.h"
 #include "dsda.h"
 #include "dsda/settings.h"
 #ifdef GL_DOOM
@@ -92,6 +91,8 @@
 
 #include "dsda/map_format.h"
 #include "dsda/mapinfo.h"
+#include "dsda/pause.h"
+#include "dsda/stretch.h"
 
 dboolean wasWiped = false;
 
@@ -145,8 +146,6 @@ int render_wipescreen;
 int mouse_acceleration;
 int demo_overwriteexisting;
 int quickstart_window_ms;
-
-int showendoom;
 
 int palette_ondamage;
 int palette_onbonus;
@@ -300,9 +299,6 @@ void e6y_InitCommandLine(void)
 
   dsda_ReadCommandLine();
 
-  // TAS-tracers
-  InitTracers();
-
   shorttics = movement_shorttics || M_CheckParm("-shorttics");
 }
 
@@ -318,7 +314,7 @@ void G_SkipDemoStart(void)
   saved_nosfxparm = nosfxparm;
   saved_nomusicparm = nomusicparm;
 
-  paused = false;
+  dsda_ResetPauseMode();
 
   doSkip = true;
 

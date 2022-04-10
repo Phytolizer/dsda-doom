@@ -74,6 +74,7 @@
 
 #include "dsda/map_format.h"
 #include "dsda/settings.h"
+#include "dsda/stretch.h"
 
 int gl_clear;
 
@@ -675,7 +676,7 @@ void gld_DrawNumPatch_f(float x, float y, int lump, int cm, enum patch_translati
 
   if (flags & VPT_STRETCH_MASK)
   {
-    stretch_param_t *params = &stretch_params[flags & VPT_ALIGN_MASK];
+    stretch_param_t *params = dsda_StretchParams(flags);
 
     xpos   = (float)((x - leftoffset) * params->video->width)  / 320.0f + params->deltax1;
     ypos   = (float)((y - topoffset)  * params->video->height) / 200.0f + params->deltay1;
@@ -2568,7 +2569,7 @@ void gld_ProjectSprite(mobj_t* thing, int lightlevel)
   int frustum_culling = HaveMouseLook() && gl_sprites_frustum_culling;
   int mlook = HaveMouseLook() || (render_fov > FOV90);
 
-  if (interpolate_view)
+  if (R_ViewInterpolation())
   {
     fx = thing->PrevX + FixedMul (tic_vars.frac, thing->x - thing->PrevX);
     fy = thing->PrevY + FixedMul (tic_vars.frac, thing->y - thing->PrevY);

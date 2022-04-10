@@ -22,6 +22,7 @@
 #include "m_menu.h"
 #include "v_video.h"
 
+#include "dsda/exhud.h"
 #include "dsda/global.h"
 #include "dsda/tas.h"
 
@@ -206,6 +207,68 @@ static dboolean console_CommandUnlock(const char* command, const char* args) {
   return true;
 }
 
+static dboolean console_TrackerAddLine(const char* command, const char* args) {
+  int id;
+
+  if (sscanf(args, "%i", &id))
+    return dsda_TrackLine(id);
+
+  return false;
+}
+
+static dboolean console_TrackerRemoveLine(const char* command, const char* args) {
+  int id;
+
+  if (sscanf(args, "%i", &id))
+    return dsda_UntrackLine(id);
+
+  return false;
+}
+
+static dboolean console_TrackerAddSector(const char* command, const char* args) {
+  int id;
+
+  if (sscanf(args, "%i", &id))
+    return dsda_TrackSector(id);
+
+  return false;
+}
+
+static dboolean console_TrackerRemoveSector(const char* command, const char* args) {
+  int id;
+
+  if (sscanf(args, "%i", &id))
+    return dsda_UntrackSector(id);
+
+  return false;
+}
+
+static dboolean console_TrackerAddMobj(const char* command, const char* args) {
+  int id;
+
+  if (sscanf(args, "%i", &id))
+    return dsda_TrackMobj(id);
+
+  return false;
+}
+
+static dboolean console_TrackerRemoveMobj(const char* command, const char* args) {
+  int id;
+
+  if (sscanf(args, "%i", &id))
+    return dsda_UntrackMobj(id);
+
+  return false;
+}
+
+static dboolean console_TrackerAddPlayer(const char* command, const char* args) {
+  return dsda_TrackPlayer(0);
+}
+
+static dboolean console_TrackerRemovePlayer(const char* command, const char* args) {
+  return dsda_UntrackPlayer(0);
+}
+
 static dboolean console_Exit(const char* command, const char* args) {
   extern void M_ClearMenus(void);
 
@@ -237,6 +300,24 @@ static console_command_entry_t console_commands[] = {
   { "player.roundxy", console_PlayerRoundXY },
   { "command.lock", console_CommandLock },
   { "command.unlock", console_CommandUnlock },
+
+  // tracking
+  { "tracker.addline", console_TrackerAddLine },
+  { "t.al", console_TrackerAddLine },
+  { "tracker.removeline", console_TrackerRemoveLine },
+  { "t.rl", console_TrackerRemoveLine },
+  { "tracker.addsector", console_TrackerAddSector },
+  { "t.as", console_TrackerAddSector },
+  { "tracker.removesector", console_TrackerRemoveSector },
+  { "t.rs", console_TrackerRemoveSector },
+  { "tracker.addmobj", console_TrackerAddMobj },
+  { "t.am", console_TrackerAddMobj },
+  { "tracker.removemobj", console_TrackerRemoveMobj },
+  { "t.rm", console_TrackerRemoveMobj },
+  { "tracker.addplayer", console_TrackerAddPlayer },
+  { "t.ap", console_TrackerAddPlayer },
+  { "tracker.removeplayer", console_TrackerRemovePlayer },
+  { "t.rp", console_TrackerRemovePlayer },
 
   // cheats
   { "idchoppers", console_BasicCheat },
