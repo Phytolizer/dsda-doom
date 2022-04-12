@@ -101,6 +101,7 @@
 #include "dsda/mobjinfo.h"
 #include "dsda/pause.h"
 #include "dsda/settings.h"
+#include "dsda/skip.h"
 #include "dsda/sndinfo.h"
 #include "dsda/time.h"
 
@@ -194,7 +195,7 @@ void D_PostEvent(event_t *ev)
   dsda_InputTrackEvent(ev);
 
   // Allow only sensible keys during skipping
-  if (doSkip)
+  if (dsda_SkipMode())
   {
     if (dsda_InputActivated(dsda_input_quit))
     {
@@ -295,7 +296,7 @@ void D_Display (fixed_t frac)
   dboolean viewactive = false, isborder = false;
 
   // e6y
-  if (doSkip)
+  if (dsda_SkipMode())
   {
     if (HU_DrawDemoProgress(false))
       I_FinishUpdate();
@@ -310,7 +311,7 @@ void D_Display (fixed_t frac)
 #endif
   }
 
-  if (!doSkip || !dsda_InputActive(dsda_input_use))
+  if (!dsda_SkipMode() || !dsda_InputActive(dsda_input_use))
     if (nodrawers)                    // for comparative timing / profiling
       return;
 
@@ -535,7 +536,7 @@ static void D_DoomLoop(void)
     if (!movement_smooth || !WasRenderedInTryRunTics || gamestate != wipegamestate)
     {
       // NSM
-      if (capturing_video && !doSkip)
+      if (capturing_video && !dsda_SkipMode())
       {
         dboolean first = true;
         int cap_step = TICRATE * FRACUNIT / cap_fps;
@@ -564,7 +565,7 @@ static void D_DoomLoop(void)
     }
 
     //e6y
-    if (avi_shot_fname && !doSkip)
+    if (avi_shot_fname && !dsda_SkipMode())
     {
       int len;
       char *avi_shot_curr_fname;
@@ -2167,7 +2168,7 @@ static void D_DoomMainSetup(void)
   HandleWarp();
 
   // Must be after HandleWarp
-  e6y_HandleSkip();
+  dsda_HandleSkip();
 
   //jff 9/3/98 use logical output routine
   lprintf(LO_INFO,"I_Init: Setting up machine state.\n");
@@ -2175,7 +2176,7 @@ static void D_DoomMainSetup(void)
 
   //jff 9/3/98 use logical output routine
   lprintf(LO_INFO,"S_Init: Setting up sound.\n");
-  S_Init(snd_SfxVolume /* *8 */, snd_MusicVolume /* *8*/ );
+  S_Init();
 
   //jff 9/3/98 use logical output routine
   lprintf(LO_INFO,"HU_Init: Setting up heads up display.\n");

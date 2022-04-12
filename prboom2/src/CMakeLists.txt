@@ -84,6 +84,8 @@ set(COMMON_SRC
     dsda/settings.h
     dsda/sfx.c
     dsda/sfx.h
+    dsda/skip.c
+    dsda/skip.h
     dsda/sndinfo.c
     dsda/sndinfo.h
     dsda/spawn_number.c
