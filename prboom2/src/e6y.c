@@ -91,6 +91,7 @@
 
 #include "dsda/map_format.h"
 #include "dsda/mapinfo.h"
+#include "dsda/playback.h"
 #include "dsda/skip.h"
 #include "dsda/stretch.h"
 
@@ -99,7 +100,6 @@ dboolean wasWiped = false;
 int secretfound;
 int demo_playerscount;
 int demo_tics_count;
-int demo_curr_tic;
 char demo_len_st[80];
 
 int avi_shot_time;
@@ -770,7 +770,7 @@ void e6y_G_Compatibility(void)
 {
   deh_applyCompatibility();
 
-  if (IsDemoPlayback())
+  if (dsda_PlaybackArg())
   {
     int i, p;
 
@@ -951,16 +951,16 @@ int HU_DrawDemoProgress(int force)
   int len, tics_count, diff;
   unsigned int tick, max_period;
 
-  if (gamestate == GS_DEMOSCREEN || (!demoplayback && !democontinue) || !hudadd_demoprogressbar)
+  if (gamestate == GS_DEMOSCREEN || !demoplayback || !hudadd_demoprogressbar)
     return false;
 
   tics_count = dsda_DemoSkipTics();
   tics_count = (tics_count ? MIN(tics_count, demo_tics_count) : demo_tics_count) * demo_playerscount;
-  len = MIN(SCREENWIDTH, (int)((int_64_t)SCREENWIDTH * demo_curr_tic / tics_count));
+  len = MIN(SCREENWIDTH, (int)((int_64_t)SCREENWIDTH * dsda_PlaybackTics() / tics_count));
 
   if (!force)
   {
-    max_period = ((tics_count - demo_curr_tic > 35 * demo_playerscount) ? 500 : 15);
+    max_period = ((tics_count - dsda_PlaybackTics() > 35 * demo_playerscount) ? 500 : 15);
 
     // Unnecessary updates of progress bar
     // can slow down demo skipping and playback

@@ -67,8 +67,6 @@ void G_DoNewGame(void);
 void G_DoReborn(int playernum);
 void G_DoPlayDemo(void);
 void G_DoCompleted(void);
-void G_ReadDemoContinueTiccmd (ticcmd_t* cmd, const byte **demo_p);//e6y
-void G_ReadDemoTiccmd(ticcmd_t *cmd, const byte **demo_p);
 void G_WriteDemoTiccmd(ticcmd_t *cmd);
 void G_DoWorldDone(void);
 void G_Compatibility(void);
@@ -83,9 +81,7 @@ void G_MakeSpecialEvent(buttoncode_t bc, ...); /* cph - new event stuff */
 int G_ValidateMapName(const char *mapname, int *pEpi, int *pMap);
 
 //e6y
-extern dboolean democontinue;
-extern char democontinuename[];
-void G_CheckDemoContinue(void);
+void G_ContinueDemo(const char *playback_name, const char *record_name);
 void G_SetSpeed(dboolean force);
 
 //e6y
@@ -135,7 +131,7 @@ extern int pistolstart;
 extern int longtics;
 extern int bytes_per_tic;
 
-#define singleplayer (!demorecording && !demoplayback && !democontinue && !netgame)
+#define singleplayer (!demorecording && !demoplayback && !netgame)
 #define comperr(i) (default_comperr[i] && singleplayer)
 
 // hexen

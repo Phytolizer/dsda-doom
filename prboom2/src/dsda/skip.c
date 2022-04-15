@@ -30,6 +30,7 @@
 #endif
 
 #include "dsda/pause.h"
+#include "dsda/playback.h"
 
 #include "skip.h"
 
@@ -127,7 +128,7 @@ void dsda_EvaluateSkipModeBuildTiccmd(void) {
         (
           demo_skiptics > 0 ?
             gametic > demo_skiptics :
-            demo_curr_tic - demo_skiptics >= demo_tics_count
+            dsda_PlaybackTics() - demo_skiptics >= demo_tics_count
         )
       ) ||
       (
@@ -201,6 +202,6 @@ void dsda_HandleSkip(void) {
       demo_skiptics = (int) (sec * TICRATE);
   }
 
-  if ((IsDemoPlayback() || IsDemoContinue()) && (warpmap != -1 || demo_skiptics))
+  if (dsda_PlaybackArg() && (warpmap != -1 || demo_skiptics))
     dsda_EnterSkipMode();
 }

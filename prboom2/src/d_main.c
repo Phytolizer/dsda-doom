@@ -100,6 +100,7 @@
 #include "dsda/mapinfo.h"
 #include "dsda/mobjinfo.h"
 #include "dsda/pause.h"
+#include "dsda/playback.h"
 #include "dsda/settings.h"
 #include "dsda/skip.h"
 #include "dsda/sndinfo.h"
@@ -1953,24 +1954,9 @@ static void D_DoomMainSetup(void)
     }
   }
 
-  if (!(p = M_CheckParm("-playdemo")) || p >= myargc-1) {   /* killough */
-    if ((p = M_CheckParm ("-fastdemo")) && p < myargc-1)    /* killough */
-      fastdemo = true;             // run at fastest speed possible
-    else
-    {
-      if ((p = IsDemoContinue()))
-      {
-        democontinue = true;
-        AddDefaultExtension(strcpy(democontinuename, myargv[p + 2]), ".lmp");
-      }
-      else
-      {
-        p = M_CheckParm ("-timedemo");
-      }
-    }
-  }
+  p = dsda_ParsePlaybackOptions();
 
-  if (p && p < myargc-1)
+  if (p)
   {
     char *file = malloc(strlen(myargv[p+1])+4+1); // cph - localised
     strcpy(file,myargv[p+1]);
@@ -2208,30 +2194,7 @@ static void D_DoomMainSetup(void)
     G_RecordDemo(myargv[p]);
   }
 
-  if ((p = M_CheckParm ("-fastdemo")) && ++p < myargc)
-  {                                 // killough
-    fastdemo = true;                // run at fastest speed possible
-    timingdemo = true;              // show stats after quit
-    G_DeferedPlayDemo(myargv[p]);
-    singledemo = true;              // quit after one demo
-  }
-  else if ((p = M_CheckParm("-timedemo")) && ++p < myargc)
-  {
-    singletics = true;
-    timingdemo = true;            // show stats after quit
-    G_DeferedPlayDemo(myargv[p]);
-    singledemo = true;            // quit after one demo
-  }
-  else if ((p = M_CheckParm("-playdemo")) && ++p < myargc)
-  {
-    G_DeferedPlayDemo(myargv[p]);
-    singledemo = true;          // quit after one demo
-  }
-  else if ((p = IsDemoContinue())) //e6y
-  {
-    G_DeferedPlayDemo(myargv[p+1]);
-    G_CheckDemoContinue();
-  }
+  dsda_ExecutePlaybackOptions();
 
   if (!singledemo)               // killough 12/98
   {
