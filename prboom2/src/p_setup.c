@@ -3444,8 +3444,8 @@ static void P_UpdateMapFormat()
   }
   else
   {
-    if (dsda_Flag(dsda_arg_debug_mapinfo) || dsda_UseMapinfo())
-      I_Error("Non-UDMF maps are not supported alongside MAPINFO");
+    // if (dsda_Flag(dsda_arg_debug_mapinfo) || dsda_UseMapinfo())
+    //   I_Error("Non-UDMF maps are not supported alongside MAPINFO");
 
     if (has_behavior && !hexen)
     {
