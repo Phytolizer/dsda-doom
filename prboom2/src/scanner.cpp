@@ -249,7 +249,7 @@ bool Scanner::GetNextToken(bool expandState)
 
 	char cur = data[scanPos++];
 	// Determine by first character
-	if(cur == '_' || (cur >= 'A' && cur <= 'Z') || (cur >= 'a' && cur <= 'z'))
+	if(cur == '_' || cur == '$' || (cur >= 'A' && cur <= 'Z') || (cur >= 'a' && cur <= 'z'))
 		nextState.token = TK_Identifier;
 	else if(cur >= '0' && cur <= '9')
 	{
@@ -325,7 +325,7 @@ bool Scanner::GetNextToken(bool expandState)
 				default:
 					break;
 				case TK_Identifier:
-					if(cur != '_' && (cur < 'A' || cur > 'Z') && (cur < 'a' || cur > 'z') && (cur < '0' || cur > '9'))
+					if(cur != '_' && (cur < 'A' || cur > 'Z') && (cur < 'a' || cur > 'z') && (cur < '0' || cur > '9') && cur != '/')
 						end = scanPos;
 					break;
 				case TK_IntConst:
@@ -396,6 +396,9 @@ bool Scanner::GetNextToken(bool expandState)
 			else
 				break;
 		}
+
+		if (start == end && scanPos == length)
+			end = scanPos;
 	}
 
 	if(end-start > 0 || stringFinished)
@@ -452,6 +455,11 @@ void Scanner::IncrementLine()
 {
 	line++;
 	lineStart = scanPos;
+}
+
+void Scanner::SkipLine()
+{
+	while (tokenLine == line && GetNextToken());
 }
 
 void Scanner::Error(int token)
@@ -591,6 +599,16 @@ bool Scanner::CheckFloat()
 	return res;
 }
 
+bool Scanner::CheckString()
+{
+	return CheckToken(TK_StringConst) || CheckToken(TK_Identifier);
+}
+
+bool Scanner::StringMatch(const char *target)
+{
+	return !strcmpnocase(string, target);
+}
+
 void Scanner::MustGetInteger()
 {
 	if (!ScanInteger()) Error(TK_IntConst);
@@ -603,7 +621,7 @@ void Scanner::MustGetFloat()
 
 void Scanner::MustGetString()
 {
-	if (!CheckToken(TK_StringConst) && !CheckToken(TK_Identifier))
+	if (!CheckString())
 	{
 		ErrorF("Expected String Constant or Identifier");
 		return;

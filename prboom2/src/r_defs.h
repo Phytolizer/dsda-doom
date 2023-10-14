@@ -156,7 +156,11 @@ typedef struct sector_s
   // killough 3/7/98: support flat heights drawn at another sector's heights
   int heightsec;    // other sector, or -1 if no other sector
 
-  int bottommap, midmap, topmap; // killough 4/4/98: dynamic colormaps
+  // killough 4/4/98: dynamic colormaps
+  short bottommap;
+  short midmap;
+  short topmap;
+  short colormap;
 
   // list of mobjs that are at least partially in the sector
   // thinglist is a subset of touching_thinglist
@@ -165,14 +169,8 @@ typedef struct sector_s
   int linecount;
   struct line_s **lines;
 
-  // killough 10/98: support skies coming from sidedefs. Allows scrolling
-  // skies and other effects. No "level info" kind of lump is needed,
-  // because you can use an arbitrary number of skies per level with this
-  // method. This field only applies when skyflatnum is used for floorpic
-  // or ceilingpic, because the rest of Doom needs to know which is sky
-  // and which isn't, etc.
-
-  int sky;
+  int floorsky;
+  int ceilingsky;
 
   // killough 3/7/98: floor and ceiling texture offsets
   fixed_t   floor_xoffs,   floor_yoffs;

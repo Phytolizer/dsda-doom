@@ -322,6 +322,9 @@ int dsda_UBossAction(mobj_t* mo) {
   if (!P_CheckBossDeath(mo))
     return true;
 
+  if (map_format.zdoom)
+    I_Error("UMAPINFO boss actions are incompatible with this map format (use MAPINFO)");
+
   for (i = 0; i < gamemapinfo->numbossactions; i++) {
     if (gamemapinfo->bossactions[i].type == mo->type) {
       junk = *lines;
@@ -406,6 +409,9 @@ int dsda_UPrepareIntermission(int* result) {
     dsda_LegacyParTime(&wminfo.fake_partime, &wminfo.modified_partime);
   }
 
+  if (map_format.zdoom && leave_data.map > 0)
+    I_Error("UMAPINFO maps are incompatible with this exit (use MAPINFO)");
+
   if (secretexit)
     next = gamemapinfo->nextsecret;
 
@@ -472,7 +478,8 @@ void dsda_ULoadMapInfo(void) {
 
   if (dsda_Flag(dsda_arg_nomapinfo) ||
       dsda_Flag(dsda_arg_debug_mapinfo) ||
-      dsda_UseMapinfo())
+      dsda_UseMapinfo() ||
+      raven)
     return;
 
   p = -1;
@@ -589,5 +596,9 @@ int dsda_UInitSky(void) {
 }
 
 int dsda_UMapFlags(map_info_flags_t* flags) {
+  return false;
+}
+
+int dsda_UMapColorMap(int* colormap) {
   return false;
 }

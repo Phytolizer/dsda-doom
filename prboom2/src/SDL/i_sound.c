@@ -68,7 +68,6 @@
 #include "i_system.h"
 
 //e6y
-#include "i_pcsound.h"
 #include "e6y.h"
 
 #include "dsda/settings.h"
@@ -128,7 +127,6 @@ SDL_mutex *sfxmutex;
 SDL_mutex *musmutex;
 
 static int pitched_sounds;
-static int snd_pcspeaker;
 int snd_samplerate; // samples per second
 static int snd_samplecount;
 
@@ -137,7 +135,6 @@ static const char *snd_midiplayer;
 void I_InitSoundParams(void)
 {
   pitched_sounds = dsda_IntConfig(dsda_config_pitched_sounds);
-  snd_pcspeaker = dsda_IntConfig(dsda_config_snd_pcspeaker);
 
   // TODO: can we reinitialize sound with new sample rate / count?
   if (!snd_samplerate)
@@ -331,9 +328,6 @@ static void updateSoundParams(int handle, sfx_params_t *params)
     I_Error("I_UpdateSoundParams: handle out of range");
 #endif
 
-  if (snd_pcspeaker)
-    return;
-
   channelinfo[slot].loop = params->loop;
 
   // Set stepping
@@ -435,17 +429,13 @@ void I_SetChannels(void)
 //
 int I_GetSfxLumpNum(sfxinfo_t *sfx)
 {
-  char namebuf[9];
-  const char* format;
-
   if (sfx->link)
     sfx = sfx->link;
 
-  // Different prefix for PC speaker sound effects for doom.
-  format = raven ? "%s" : snd_pcspeaker ? "dp%s" : "ds%s";
+  if (!sfx->name)
+    return LUMP_NOT_FOUND;
 
-  sprintf(namebuf, format, sfx->name);
-  return W_CheckNumForName(namebuf); //e6y: make missing sounds non-fatal
+  return W_CheckNumForName(sfx->name); //e6y: make missing sounds non-fatal
 }
 
 //
@@ -472,9 +462,6 @@ int I_StartSound(int id, int channel, sfx_params_t *params)
 #else
     return -1;
 #endif
-
-  if (snd_pcspeaker)
-    return I_PCS_StartSound(id, channel, params);
 
   lump = S_sfx[id].lumpnum;
 
@@ -515,12 +502,6 @@ void I_StopSound (int handle)
     I_Error("I_StopSound: handle out of range");
 #endif
 
-  if (snd_pcspeaker)
-  {
-    I_PCS_StopSound(handle);
-    return;
-  }
-
   SDL_LockMutex (sfxmutex);
   stopchan(handle);
   SDL_UnlockMutex (sfxmutex);
@@ -534,9 +515,6 @@ dboolean I_SoundIsPlaying(int handle)
     I_Error("I_SoundIsPlaying: handle out of range");
 #endif
 
-  if (snd_pcspeaker)
-    return I_PCS_SoundIsPlaying(handle);
-
   return channelinfo[handle].data != NULL;
 }
 
@@ -545,9 +523,6 @@ dboolean I_AnySoundStillPlaying(void)
 {
   dboolean result = false;
   int i;
-
-  if (snd_pcspeaker)
-    return false;
 
   for (i = 0; i < MAX_CHANNELS; i++)
     result |= channelinfo[i].data != NULL;
@@ -569,9 +544,6 @@ dboolean I_AnySoundStillPlaying(void)
 //
 
 static void UpdateMusic (void *buff, unsigned nsamp);
-
-// from pcsound_sdl.c
-void PCSound_Mix_Callback(void *udata, Uint8 *stream, int len);
 
 static void I_UpdateSound(void *unused, Uint8 *stream, int len)
 {
@@ -605,13 +577,6 @@ static void I_UpdateSound(void *unused, Uint8 *stream, int len)
     SDL_LockMutex (musmutex);
     UpdateMusic (stream, len / 4);
     SDL_UnlockMutex (musmutex);
-  }
-
-  if (snd_pcspeaker)
-  {
-    PCSound_Mix_Callback (NULL, stream, len);
-    // no sfx mixing
-    return;
   }
 
   SDL_LockMutex (sfxmutex);
@@ -795,9 +760,6 @@ void I_InitSound(void)
 
   sfxmutex = SDL_CreateMutex ();
 
-  if (snd_pcspeaker)
-    I_PCS_InitSound();
-
   if (!nomusicparm)
     I_InitMusic();
 
@@ -900,7 +862,6 @@ static void PlaySong(int handle, int looping);
 #include "mus2mid.h"
 
 #include "MUSIC/musicplayer.h"
-#include "MUSIC/oplplayer.h"
 #include "MUSIC/madplayer.h"
 #include "MUSIC/dumbplayer.h"
 #include "MUSIC/flplayer.h"
@@ -924,7 +885,6 @@ static const music_player_t *music_players[] =
   &mp_player, // madplayer.h
   &db_player, // dumbplayer.h
   &fl_player, // flplayer.h
-  &opl_synth_player, // oplplayer.h
   &pm_player, // portmidiplayer.h
   NULL
 };
@@ -936,7 +896,6 @@ static int music_player_was_init[NUM_MUS_PLAYERS];
 #define PLAYER_MAD        "mad mp3 player"
 #define PLAYER_DUMB       "dumb tracker player"
 #define PLAYER_FLUIDSYNTH "fluidsynth midi player"
-#define PLAYER_OPL2       "opl2 synth player"
 #define PLAYER_PORTMIDI   "portmidi midi player"
 
 // order in which players are to be tried
@@ -946,12 +905,11 @@ char music_player_order[NUM_MUS_PLAYERS][200] =
   PLAYER_MAD,
   PLAYER_DUMB,
   PLAYER_FLUIDSYNTH,
-  PLAYER_OPL2,
   PLAYER_PORTMIDI,
 };
 
 const char *midiplayers[midi_player_last + 1] = {
-  "fluidsynth", "opl2", "portmidi", NULL };
+  "fluidsynth", "portmidi", NULL };
 
 static int current_player = -1;
 static const void *music_handle = NULL;
@@ -1377,20 +1335,12 @@ void M_ChangeMIDIPlayer(void)
   if (!strcasecmp(snd_midiplayer, midiplayers[midi_player_fluidsynth]))
   {
     strcpy(music_player_order[3], PLAYER_FLUIDSYNTH);
-    strcpy(music_player_order[4], PLAYER_OPL2);
-    strcpy(music_player_order[5], PLAYER_PORTMIDI);
-  }
-  else if (!strcasecmp(snd_midiplayer, midiplayers[midi_player_opl2]))
-  {
-    strcpy(music_player_order[3], PLAYER_OPL2);
-    strcpy(music_player_order[4], PLAYER_FLUIDSYNTH);
-    strcpy(music_player_order[5], PLAYER_PORTMIDI);
+    strcpy(music_player_order[4], PLAYER_PORTMIDI);
   }
   else if (!strcasecmp(snd_midiplayer, midiplayers[midi_player_portmidi]))
   {
     strcpy(music_player_order[3], PLAYER_PORTMIDI);
     strcpy(music_player_order[4], PLAYER_FLUIDSYNTH);
-    strcpy(music_player_order[5], PLAYER_OPL2);
   }
 
   S_StopMusic();

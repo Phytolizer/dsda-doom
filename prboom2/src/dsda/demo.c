@@ -268,7 +268,11 @@ void dsda_InitDemoRecording(void) {
 
   if (compatibility_level_unspecified)
     I_Error("You must specify a compatibility level when recording a demo!\n"
-            "Example: dsda-doom -iwad DOOM -complevel 3 -record demo");
+            "Example: dsda-doom -iwad DOOM -complevel 3 -skill 4 -record demo");
+
+  if (!dsda_Flag(dsda_arg_skill))
+    I_Error("You must specify a skill level when recording a demo!\n"
+            "Example: dsda-doom -iwad DOOM -complevel 3 -skill 4 -record demo");
 
   demorecording = true;
 
@@ -639,8 +643,11 @@ void dsda_JoinDemoCmd(ticcmd_t* cmd) {
 
   // Sometimes this bit is not available
   if (
-    (demo_compatibility && !prboom_comp[PC_ALLOW_SSG_DIRECT].state) ||
-    (cmd->buttons & BT_CHANGE) == 0
+    (!demo_compatibility || gamestate != GS_FINALE) &&
+    (
+      (demo_compatibility && !prboom_comp[PC_ALLOW_SSG_DIRECT].state) ||
+      (cmd->buttons & BT_CHANGE) == 0
+    )
   )
     cmd->buttons |= BT_JOIN;
   else

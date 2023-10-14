@@ -53,6 +53,7 @@
 #include "v_video.h"
 #include "smooth.h"
 #include "r_fps.h"
+#include "r_plane.h"
 #include "g_overflow.h"
 #include "am_map.h"
 #include "e6y.h"//e6y
@@ -66,6 +67,7 @@
 #include "dsda/map_format.h"
 #include "dsda/mapinfo.h"
 #include "dsda/preferences.h"
+#include "dsda/scroll.h"
 #include "dsda/settings.h"
 #include "dsda/skip.h"
 #include "dsda/tranmap.h"
@@ -922,10 +924,10 @@ static void P_InitializeSectorDefaults(sector_t *ss)
   ss->ceilinglightsec = -1;
 
   // killough 4/4/98: colormaps:
-  ss->bottommap = ss->midmap = ss->topmap = 0;
+  ss->bottommap = ss->midmap = ss->topmap = ss->colormap = 0;
 
-  // killough 10/98: sky textures coming from sidedefs:
-  ss->sky = 0;
+  ss->floorsky = 0;
+  ss->ceilingsky = 0;
 
   // [kb] For R_WiggleFix
   ss->cachedheight = 0;
@@ -1011,9 +1013,52 @@ static void P_LoadUDMFSectors(int lump)
     ss->ceiling_yscale = dsda_FloatToFixed(ms->yscaleceiling);
     ss->gravity = dsda_StringToFixed(ms->gravity);
 
+    if (ms->frictionfactor)
+    {
+      P_ResolveFrictionFactor(dsda_StringToFixed(ms->frictionfactor), ss);
+    }
+
+    if (ms->movefactor)
+    {
+      ss->movefactor = dsda_StringToFixed(ms->movefactor);
+      ss->flags |= SECF_FRICTION;
+    }
+
     ss->damage.amount = ms->damageamount;
     ss->damage.leakrate = ms->leakiness;
     ss->damage.interval = ms->damageinterval;
+
+    if (ms->colormap)
+    {
+      ss->colormap = R_ColormapNumForName(ms->colormap);
+      if (ss->colormap < 0)
+      {
+        lprintf(LO_WARN, "Unknown colormap %s in sector %d.\n", ms->colormap, i);
+        ss->colormap = 0;
+      }
+    }
+
+    if (ms->skyfloor)
+    {
+      ss->floorsky = R_TextureNumForName(ms->skyfloor) | PL_SKYFLAT_SECTOR;
+    }
+
+    if (ms->skyceiling)
+    {
+      ss->ceilingsky = R_TextureNumForName(ms->skyceiling) | PL_SKYFLAT_SECTOR;
+    }
+
+    if ((ms->xscrollfloor || ms->yscrollfloor) && ms->scrollfloormode)
+      dsda_AddZDoomFloorScroller(dsda_FloatToFixed(ms->xscrollfloor),
+                                 dsda_FloatToFixed(ms->yscrollfloor), i, ms->scrollfloormode);
+
+    if ((ms->xscrollceiling || ms->yscrollceiling) && ms->scrollceilingmode)
+      dsda_AddZDoomCeilingScroller(dsda_FloatToFixed(ms->xscrollceiling),
+                                   dsda_FloatToFixed(ms->yscrollceiling), i, ms->scrollceilingmode);
+
+    if ((ms->xthrust || ms->ythrust) && ms->thrustgroup && ms->thrustlocation)
+      dsda_AddThruster(dsda_FloatToFixed(ms->xthrust), dsda_FloatToFixed(ms->ythrust),
+                       i, ms->thrustgroup + (ms->thrustlocation << THRUST_LOCATION_SHIFT));
 
     if (ms->flags & UDMF_SECF_DAMAGEHAZARD)
       ss->flags |= SECF_HAZARD;
@@ -2559,6 +2604,23 @@ static void P_LoadUDMFSideDefs(int lump)
     sd->lightlevel_top = msd->light_top;
     sd->lightlevel_mid = msd->light_mid;
     sd->lightlevel_bottom = msd->light_bottom;
+
+    if (msd->xscroll || msd->yscroll)
+      dsda_AddSideScroller(dsda_FloatToFixed(msd->xscroll),
+                           dsda_FloatToFixed(msd->yscroll), i, 0);
+
+    if (msd->xscrolltop || msd->yscrolltop)
+      dsda_AddSideScroller(dsda_FloatToFixed(msd->xscrolltop),
+                           dsda_FloatToFixed(msd->yscrolltop), i, SCROLL_TOP);
+
+    if (msd->xscrollmid || msd->yscrollmid)
+      dsda_AddSideScroller(dsda_FloatToFixed(msd->xscrollmid),
+                           dsda_FloatToFixed(msd->yscrollmid), i, SCROLL_MID);
+
+    if (msd->xscrollbottom || msd->yscrollbottom)
+      dsda_AddSideScroller(dsda_FloatToFixed(msd->xscrollbottom),
+                           dsda_FloatToFixed(msd->yscrollbottom), i, SCROLL_BOTTOM);
+
     sd->flags = msd->flags;
 
     if (msd->sector >= numsectors)

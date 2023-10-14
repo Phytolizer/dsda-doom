@@ -90,7 +90,7 @@ static arg_config_t arg_config[dsda_arg_count] = {
   },
   [dsda_arg_record] = {
     "-record", NULL, NULL,
-    "records a demo to the give file",
+    "records a demo to the given file",
     arg_string,
   },
   [dsda_arg_recordfromto] = {
@@ -112,6 +112,16 @@ static arg_config_t arg_config[dsda_arg_count] = {
     "-skill", NULL, NULL,
     "sets the skill level",
     arg_int, 1, 255,
+  },
+  [dsda_arg_uv] = {
+    "-uv", NULL, NULL,
+    "sets the skill level to 4",
+    arg_null,
+  },
+  [dsda_arg_nm] = {
+    "-nm", NULL, NULL,
+    "sets the skill level to 5",
+    arg_null,
   },
   [dsda_arg_episode] = {
     "-episode", NULL, NULL,
@@ -327,6 +337,11 @@ static arg_config_t arg_config[dsda_arg_count] = {
     "-export_text_file", NULL, NULL,
     "export a dsda-format text file template",
     arg_null,
+  },
+  [dsda_arg_track_playback] = {
+    "-track_playback", NULL, NULL,
+    "treat demo playback as an attempt for the given split file base",
+    arg_string,
   },
   [dsda_arg_export_ghost] = {
     "-export_ghost", NULL, NULL,
@@ -838,6 +853,12 @@ void dsda_ParseCommandLineArgs(int argc, char** argv) {
         I_Error("Unknown command line option %s\n", dsda_argv[argv_i]);
     }
   }
+
+  if (dsda_Flag(dsda_arg_uv))
+    dsda_UpdateIntArg(dsda_arg_skill, "4");
+
+  if (dsda_Flag(dsda_arg_nm))
+    dsda_UpdateIntArg(dsda_arg_skill, "5");
 }
 
 void dsda_UpdateIntArg(dsda_arg_identifier_t id, const char* param) {

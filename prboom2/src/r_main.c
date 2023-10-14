@@ -64,6 +64,7 @@
 #include "dsda/configuration.h"
 #include "dsda/exhud.h"
 #include "dsda/map_format.h"
+#include "dsda/mapinfo.h"
 #include "dsda/render_stats.h"
 #include "dsda/settings.h"
 #include "dsda/signal_context.h"
@@ -881,16 +882,19 @@ static void R_SetupFrame (player_t *player)
 
   // killough 3/20/98, 4/4/98: select colormap based on player status
 
-  if (player->mo->subsector->sector->heightsec != -1)
-    {
-      const sector_t *s = player->mo->subsector->sector->heightsec + sectors;
-      cm = viewz < s->floorheight ? s->bottommap : viewz > s->ceilingheight ?
-        s->topmap : s->midmap;
-      if (cm < 0 || cm > numcolormaps)
-        cm = 0;
-    }
+  if (player->mo->subsector->sector->colormap)
+    cm = player->mo->subsector->sector->colormap;
+  else if (player->mo->subsector->sector->heightsec != -1)
+  {
+    const sector_t *s = player->mo->subsector->sector->heightsec + sectors;
+    cm = viewz < s->floorheight ? s->bottommap :
+         viewz > s->ceilingheight ? s->topmap :
+         s->midmap;
+    if (cm < 0 || cm > numcolormaps)
+      cm = 0;
+  }
   else
-    cm = 0;
+    cm = map_info.default_colormap;
 
   //e6y: save previous and current colormap
   boom_cm = cm;

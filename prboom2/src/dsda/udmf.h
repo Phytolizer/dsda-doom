@@ -129,6 +129,14 @@ typedef struct {
   int light_top;
   int light_mid;
   int light_bottom;
+  float xscroll;
+  float yscroll;
+  float xscrolltop;
+  float yscrolltop;
+  float xscrollmid;
+  float yscrollmid;
+  float xscrollbottom;
+  float yscrollbottom;
   udmf_side_flags_t flags;
 } udmf_side_t;
 
@@ -149,6 +157,20 @@ typedef struct {
 #define UDMF_SECF_DAMAGEHAZARD         0x0200
 #define UDMF_SECF_NOATTACK             0x0400
 
+#define UDMF_SCROLL_TEXTURE 0x01
+#define UDMF_SCROLL_STATIC  0x02
+#define UDMF_SCROLL_PLAYER  0x04
+#define UDMF_SCROLL_MONSTER 0x08
+
+#define UDMF_THRUST_STATIC     0x01
+#define UDMF_THRUST_PLAYER     0x02
+#define UDMF_THRUST_MONSTER    0x04
+#define UDMF_THRUST_PROJECTILE 0x08
+#define UDMF_THRUST_GROUNDED   0x10
+#define UDMF_THRUST_AIRBORNE   0x20
+#define UDMF_THRUST_CEILING    0x40
+#define UDMF_THRUST_WINDTHRUST 0x80
+
 typedef uint16_t udmf_sector_flags_t;
 
 typedef struct {
@@ -159,6 +181,9 @@ typedef struct {
   int lightlevel;
   int special;
   int id;
+  char* skyfloor;
+  char* skyceiling;
+  char* colormap;
   char* moreids;
   float xpanningfloor;
   float ypanningfloor;
@@ -176,6 +201,18 @@ typedef struct {
   int damageamount;
   int damageinterval;
   int leakiness;
+  float xscrollfloor;
+  float yscrollfloor;
+  int scrollfloormode;
+  float xscrollceiling;
+  float yscrollceiling;
+  int scrollceilingmode;
+  float xthrust;
+  float ythrust;
+  int thrustgroup;
+  int thrustlocation;
+  char* frictionfactor;
+  char* movefactor;
   udmf_sector_flags_t flags;
 } udmf_sector_t;
 

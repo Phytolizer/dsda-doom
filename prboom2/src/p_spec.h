@@ -905,31 +905,6 @@ typedef struct
 
 // p_spec
 
-// killough 3/7/98: Add generalized scroll effects
-
-#define SCROLL_TOP    0x01
-#define SCROLL_MID    0x02
-#define SCROLL_BOTTOM 0x04
-
-typedef struct {
-  thinker_t thinker;   // Thinker structure for scrolling
-  fixed_t dx, dy;      // (dx,dy) scroll speeds
-  int affectee;        // Number of affected sidedef, sector, tag, or whatever
-  int control;         // Control sector (-1 if none) used to control scrolling
-  fixed_t last_height; // Last known height of control sector
-  fixed_t vdx, vdy;    // Accumulated velocity if accelerative
-  int accel;           // Whether it's accelerative
-  int flags;
-  enum
-  {
-    sc_side,
-    sc_floor,
-    sc_ceiling,
-    sc_carry,
-    sc_carry_ceiling,  // killough 4/11/98: carry objects hanging on ceilings
-  } type;              // Type of scroll effect
-} scroll_t;
-
 // phares 3/12/98: added new model of friction for ice/sludge effects
 
 typedef struct {
@@ -1126,9 +1101,6 @@ void T_MoveElevator
 ( elevator_t* elevator );
 
 // p_spec
-
-void T_Scroll
-( scroll_t * );      // killough 3/7/98: scroll effect thinker
 
 void T_Friction
 ( friction_t * );    // phares 3/12/98: friction thinker
@@ -1686,6 +1658,7 @@ void EV_StopLightEffect(int tag);
 void T_ZDoom_Glow(zdoom_glow_t *g);
 void T_ZDoom_Flicker(zdoom_flicker_t *g);
 int P_ConvertHexenCrush(int crush);
+void P_ResolveFrictionFactor(fixed_t friction_factor, sector_t *sec);
 
 int EV_TeleportGroup(short group_tid, mobj_t *thing, short source_tid, short dest_tid,
                      dboolean move_source, dboolean fog);

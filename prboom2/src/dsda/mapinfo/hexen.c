@@ -247,9 +247,6 @@ int dsda_HexenMusicIndexToLumpNum(int* lump, int music_index) {
   if (music_index >= hexen_mus_hub)
     return false;
 
-  if (!map_format.sndinfo)
-    return false;
-
   lump_name = dsda_SndInfoMapSongLumpName(music_index);
   if (!*lump_name)
     switch (music_index)
@@ -273,9 +270,6 @@ int dsda_HexenMusicIndexToLumpNum(int* lump, int music_index) {
 
 int dsda_HexenMapMusic(int* music_index, int* music_lump) {
   if (!hexen)
-    return false;
-
-  if (!map_format.sndinfo)
     return false;
 
   *music_lump = -1;
@@ -614,4 +608,8 @@ int dsda_HexenMapFlags(map_info_flags_t* flags) {
            MI_SHOW_AUTHOR;
 
   return true;
+}
+
+int dsda_HexenMapColorMap(int* colormap) {
+  return false;
 }

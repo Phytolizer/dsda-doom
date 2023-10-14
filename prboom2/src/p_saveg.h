@@ -36,7 +36,7 @@
 
 #include "doomtype.h"
 
-#define SAVEVERSION 3
+#define SAVEVERSION 4
 
 /* Persistent storage/archiving.
  * These are the load / save game routines. */
@@ -56,8 +56,8 @@ void P_ArchiveMap(void);
 void P_UnArchiveMap(void);
 
 // dsda - fix save / load synchronization
-void P_TrueArchiveThinkers(void);
-void P_TrueUnArchiveThinkers(void);
+void P_ArchiveThinkers(void);
+void P_UnArchiveThinkers(void);
 
 extern byte *save_p;
 extern byte* savebuffer;

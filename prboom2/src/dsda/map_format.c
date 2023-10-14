@@ -285,14 +285,13 @@ void dsda_RemoveMobjThingID(mobj_t* mo);
 void P_IterateCompatibleSpecHit(mobj_t *thing, fixed_t oldx, fixed_t oldy);
 void P_IterateZDoomSpecHit(mobj_t *thing, fixed_t oldx, fixed_t oldy);
 
-static const map_format_t zdoom_in_hexen_map_format = {
+static const map_format_t zdoom_map_format = {
   .zdoom = true,
   .hexen = true,
   .polyobjs = true,
   .acs = false,
   .thing_id = true,
   .sndseq = false,
-  .sndinfo = false,
   .animdefs = false,
   .doublesky = false,
   .map99 = false,
@@ -348,7 +347,6 @@ static const map_format_t hexen_map_format = {
   .acs = true,
   .thing_id = true,
   .sndseq = true,
-  .sndinfo = true,
   .animdefs = true,
   .doublesky = true,
   .map99 = true,
@@ -404,7 +402,6 @@ static const map_format_t heretic_map_format = {
   .acs = false,
   .thing_id = false,
   .sndseq = false,
-  .sndinfo = false,
   .animdefs = false,
   .doublesky = false,
   .map99 = false,
@@ -460,7 +457,6 @@ static const map_format_t doom_map_format = {
   .acs = false,
   .thing_id = false,
   .sndseq = false,
-  .sndinfo = false,
   .animdefs = false,
   .doublesky = false,
   .map99 = false,
@@ -517,7 +513,7 @@ static void dsda_ApplyMapPrecision(void) {
 }
 
 void dsda_ApplyZDoomMapFormat(void) {
-  map_format = zdoom_in_hexen_map_format;
+  map_format = zdoom_map_format;
 
   if (!mbf21)
     I_Error("You must use complevel 21 when playing doom-in-hexen format maps.");

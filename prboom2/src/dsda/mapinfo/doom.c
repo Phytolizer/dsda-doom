@@ -574,7 +574,9 @@ int dsda_DoomPrepareFinale(int* result) {
 void dsda_DoomLoadMapInfo(void) {
   int p;
 
-  if (dsda_Flag(dsda_arg_nomapinfo) || (!dsda_Flag(dsda_arg_debug_mapinfo) && !dsda_UseMapinfo()))
+  if (dsda_Flag(dsda_arg_nomapinfo) ||
+      (!dsda_Flag(dsda_arg_debug_mapinfo) && !dsda_UseMapinfo()) ||
+      raven)
     return;
 
   p = -1;
@@ -707,6 +709,18 @@ int dsda_DoomMapFlags(map_info_flags_t* flags) {
     return false;
 
   *flags = current_map->flags;
+
+  return true;
+}
+
+int dsda_DoomMapColorMap(int* colormap) {
+  if (!current_map || !current_map->colormap)
+    return false;
+
+  *colormap = R_ColormapNumForName(current_map->colormap);
+
+  if (*colormap < 0)
+    *colormap = 0;
 
   return true;
 }

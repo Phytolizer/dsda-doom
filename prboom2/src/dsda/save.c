@@ -85,6 +85,8 @@ static void dsda_ArchiveContext(void) {
   CheckSaveGame(dsda_GameOptionSize());
   save_p = G_WriteOptions(save_p);
 
+  P_SAVE_X(leave_data);
+
   P_SAVE_X(leveltime);
   P_SAVE_X(totalleveltimes);
   P_SAVE_X(levels_completed);
@@ -121,6 +123,8 @@ static void dsda_UnArchiveContext(void) {
 
   save_p += (G_ReadOptions(save_p) - save_p);
 
+  P_LOAD_X(leave_data);
+
   G_InitNew(gameskill, gameepisode, gamemap, false);
 
   P_LOAD_X(leveltime);
@@ -142,7 +146,7 @@ void dsda_ArchiveAll(void) {
   P_ThinkerToIndex();
   P_ArchiveWorld();
   P_ArchivePolyobjs();
-  P_TrueArchiveThinkers();
+  P_ArchiveThinkers();
   P_ArchiveScripts();
   P_ArchiveSounds();
   P_ArchiveAmbientSound();
@@ -162,7 +166,7 @@ void dsda_UnArchiveAll(void) {
   P_UnArchivePlayers();
   P_UnArchiveWorld();
   P_UnArchivePolyobjs();
-  P_TrueUnArchiveThinkers();
+  P_UnArchiveThinkers();
   P_UnArchiveScripts();
   P_UnArchiveSounds();
   P_UnArchiveAmbientSound();

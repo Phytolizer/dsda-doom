@@ -30,6 +30,7 @@ int num_sfx;
 static int deh_soundnames_size;
 static char** deh_soundnames;
 static byte* sfx_state;
+static int highest_index;
 
 static void dsda_ResetSFX(int from, int to) {
   int i;
@@ -37,7 +38,6 @@ static void dsda_ResetSFX(int from, int to) {
   for (i = from; i < to; ++i) {
     S_sfx[i].priority = 127;
     S_sfx[i].pitch = -1;
-    S_sfx[i].volume = -1;
   }
 }
 
@@ -64,9 +64,11 @@ static void dsda_EnsureCapacity(int limit) {
     S_sfx = realloc(S_sfx, num_sfx * sizeof(*S_sfx));
     memset(S_sfx + old_num_sfx, 0, (num_sfx - old_num_sfx) * sizeof(*S_sfx));
 
-    sfx_state = realloc(sfx_state, num_sfx * sizeof(*sfx_state));
-    memset(sfx_state + old_num_sfx, 0,
-      (num_sfx - old_num_sfx) * sizeof(*sfx_state));
+    if (sfx_state) {
+      sfx_state = realloc(sfx_state, num_sfx * sizeof(*sfx_state));
+      memset(sfx_state + old_num_sfx, 0,
+        (num_sfx - old_num_sfx) * sizeof(*sfx_state));
+    }
 
     dsda_ResetSFX(old_num_sfx, num_sfx);
   }
@@ -75,11 +77,12 @@ static void dsda_EnsureCapacity(int limit) {
 int dsda_GetDehSFXIndex(const char* key, size_t length) {
   int i;
 
+  // offset "ds" for dehacked names
   for (i = 1; i < num_sfx; ++i)
     if (
       S_sfx[i].name &&
-      strlen(S_sfx[i].name) == length &&
-      !strnicmp(S_sfx[i].name, key, length) &&
+      strlen(S_sfx[i].name + 2) == length &&
+      !strnicmp(S_sfx[i].name + 2, key, length) &&
       !sfx_state[i]
     ) {
       sfx_state[i] = true; // sfx has been edited
@@ -108,10 +111,23 @@ int dsda_GetOriginalSFXIndex(const char* key) {
   return i;
 }
 
-sfxinfo_t* dsda_GetDehSFX(int index) {
+static sfxinfo_t* dsda_SFXAtIndex(int index) {
   dsda_EnsureCapacity(index);
 
+  if (index > highest_index)
+    highest_index = index;
+
   return &S_sfx[index];
+}
+
+sfxinfo_t* dsda_GetDehSFX(int index) {
+  return dsda_SFXAtIndex(index);
+}
+
+sfxinfo_t* dsda_NewSFX(int* index) {
+  *index = highest_index + 1;
+
+  return dsda_SFXAtIndex(*index);
 }
 
 void dsda_InitializeSFX(sfxinfo_t* source, int count) {
@@ -119,6 +135,7 @@ void dsda_InitializeSFX(sfxinfo_t* source, int count) {
   extern int raven;
 
   num_sfx = count;
+  highest_index = count - 1;
   deh_soundnames_size = num_sfx + 1;
 
   S_sfx = source;
@@ -128,7 +145,7 @@ void dsda_InitializeSFX(sfxinfo_t* source, int count) {
   deh_soundnames = malloc(deh_soundnames_size * sizeof(*deh_soundnames));
   for (i = 1; i < num_sfx; i++)
     if (S_sfx[i].name != NULL)
-      deh_soundnames[i] = strdup(S_sfx[i].name);
+      deh_soundnames[i] = strdup(S_sfx[i].name + 2); // offset "ds" for dehacked names
     else
       deh_soundnames[i] = NULL;
   deh_soundnames[0] = NULL;
@@ -147,6 +164,9 @@ void dsda_FreeDehSFX(void) {
 
   free(deh_soundnames);
   free(sfx_state);
+
+  deh_soundnames = NULL;
+  sfx_state = NULL;
 }
 
 static int dsda_parallel_sfx_limit;

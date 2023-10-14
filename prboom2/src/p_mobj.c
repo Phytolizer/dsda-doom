@@ -55,6 +55,7 @@
 #include "e6y.h"//e6y
 
 #include "dsda.h"
+#include "dsda/ambient.h"
 #include "dsda/map_format.h"
 #include "dsda/mapinfo.h"
 #include "dsda/settings.h"
@@ -525,6 +526,19 @@ static void P_XYMovement (mobj_t* mo)
   if (mo->flags & (MF_MISSILE | MF_SKULLFLY))
     return;
 
+  if (
+    mo->z > mo->floorz && !(mo->flags2 & MF2_ONMOBJ) && !(mo->flags & MF_FLY) &&
+    player && mo->player && map_info.air_control > 256
+  )
+  {
+    mo->momx = FixedMul(mo->momx, map_info.air_friction);
+    mo->momy = FixedMul(mo->momy, map_info.air_friction);
+
+    player->momx = FixedMul(player->momx, map_info.air_friction);
+    player->momy = FixedMul(player->momy, map_info.air_friction);
+    return;
+  }
+
   if (mo->z > mo->floorz &&
       !(mo->flags & MF_FLY) &&
       !(mo->flags2 & MF2_FLY) &&
@@ -559,6 +573,7 @@ static void P_XYMovement (mobj_t* mo)
   if (
     mo->momx > -STOPSPEED && mo->momx < STOPSPEED &&
     mo->momy > -STOPSPEED && mo->momy < STOPSPEED &&
+    !(map_format.zdoom && mo->intflags & MIF_SCROLLING) &&
     (
       !player ||
       !(player->cmd.forwardmove | player->cmd.sidemove) ||
@@ -1040,7 +1055,7 @@ floater:
       return;
     }
   }
-  else if (mo->flags2 & MF2_LOGRAV || (mo->type == MT_GIBDTH && allow_incompatibility))
+  else if (mo->flags2 & MF2_LOGRAV)
   {
     if (mo->momz == 0)
       mo->momz = -(gravity >> 3) * 2;
@@ -2472,16 +2487,26 @@ mobj_t* P_SpawnMapThing (const mapthing_t* mthing, int index)
   if (!P_ShouldSpawnMapThing(options))
     return NULL;
 
+  if (!raven && thingtype >= 14001 && thingtype <= 14064)
+  {
+    iden_num = thingtype - 14000; // Ambient sound id
+    thingtype = 14064; // ZMT_AMBIENTSOUND
+  }
+
+  if (!raven && thingtype == 14065)
+  {
+    iden_num = mthing->special_args[0]; // Ambient sound id
+    thingtype = 14064; // ZMT_AMBIENTSOUND
+  }
+
   if (!raven && thingtype >= 14100 && thingtype <= 14164)
   {
-    // Use the ambient number
     iden_num = thingtype - 14100; // Mus change
     thingtype = 14164;            // MT_MUSICSOURCE
   }
 
   if (!raven && thingtype == 14165 && map_format.hexen)
   {
-    // Use the ambient number
     iden_num = BETWEEN(0, 64, mthing->special_args[0]); // Mus change
     thingtype = 14164;            // MT_MUSICSOURCE
   }
@@ -2652,6 +2677,11 @@ spawnit:
         P_SetMobjState(mobj, HEXEN_S_ICEGUY_DORMANT);
       }
       mobj->tics = -1;
+  }
+
+  if (!raven && thingtype == 14064)
+  {
+    dsda_SpawnAmbientSource(mobj);
   }
 
   return mobj;

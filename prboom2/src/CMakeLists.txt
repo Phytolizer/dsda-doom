@@ -11,6 +11,8 @@ set(COMMON_SRC
     doomtype.h
     dsda.c
     dsda.h
+    dsda/ambient.cpp
+    dsda/ambient.h
     dsda/analysis.c
     dsda/analysis.h
     dsda/args.c
@@ -194,6 +196,8 @@ set(COMMON_SRC
     dsda/render_stats.h
     dsda/save.c
     dsda/save.h
+    dsda/scroll.c
+    dsda/scroll.h
     dsda/settings.c
     dsda/settings.h
     dsda/sfx.c
@@ -308,8 +312,6 @@ set(COMMON_SRC
     i_glob.c
     i_glob.h
     i_main.h
-    i_pcsound.c
-    i_pcsound.h
     i_sound.h
     i_system.h
     i_video.h
@@ -445,17 +447,7 @@ set(SDLDOOM_SOURCES
     SDL/i_video.c
 )
 
-set(PCSOUND_SOURCES
-    PCSOUND/pcsound.c
-    PCSOUND/pcsound.h
-    PCSOUND/pcsound_linux.c
-    PCSOUND/pcsound_sdl.c
-    PCSOUND/pcsound_win32.c
-)
-
 set(DOOMMUSIC_SOURCES
-    MUSIC/dbopl.c
-    MUSIC/dbopl.h
     MUSIC/dumbplayer.c
     MUSIC/dumbplayer.h
     MUSIC/flplayer.c
@@ -465,12 +457,6 @@ set(DOOMMUSIC_SOURCES
     MUSIC/midifile.c
     MUSIC/midifile.h
     MUSIC/musicplayer.h
-    MUSIC/opl.c
-    MUSIC/opl.h
-    MUSIC/oplplayer.c
-    MUSIC/oplplayer.h
-    MUSIC/opl_queue.c
-    MUSIC/opl_queue.h
     MUSIC/portmidiplayer.c
     MUSIC/portmidiplayer.h
     MUSIC/vorbisplayer.c
@@ -489,7 +475,6 @@ set(DSDA_SOURCES
     ${WAD_SRC}
     ${MUS2MID_SRC}
     ${SDLDOOM_SOURCES}
-    ${PCSOUND_SOURCES}
     ${DOOMMUSIC_SOURCES}
     ${EXTRA_FILES}
 )
