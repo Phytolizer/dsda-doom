@@ -1,8 +1,8 @@
-## Things and Specials
+# Things and Specials
 
 This page documents the new thing types and special actions available in advanced map formats in dsda-doom. DSDA-Doom supports both Doom-in-Hexen and UDMF maps. See the [UDMF documentation](./udmf.md) for complete details about the `dsda` namespace.
 
-### Thing Types
+## Thing Types
 
 All Vanilla, Boom, and MBF thing types are supported in advanced map formats. This table defines the new entries.
 
@@ -21,17 +21,15 @@ All Vanilla, Boom, and MBF thing types are supported in advanced map formats. Th
 | 14100-14164 | MusicChanger | Changes music via DoomEdNum (0 to 64). |
 | 14165 | Custom MusicChanger | Changes music via special argument (0 to 64). |
 
-#### Notes
+### Notes
 
 - Poly objects have no sound.
 - Poly objects may have visual errors in software mode.
 - The custom ambient sound object only supports the ID argument.
 
-### Line Specials
+## Line Specials
 
-You can refer to the zdoom wiki for information on these line specials. Note that the hexen format only supports up to special 255, and argument values from 0 to 255. UDMF does not have these limits. Special behavior matches zdoom except where noted below, and under the following constraint:
-
-- Line flags coming from arguments are ignored (e.g., the _moreflags_ argument in **TranslucentLine**).
+You can refer to the zdoom wiki for information on these line specials. Note that the hexen format only supports up to special 255, and argument values from 0 to 255. UDMF does not have these limits. Special behavior matches zdoom except where noted below.
 
 **1: Polyobj_StartLine**
 
@@ -42,8 +40,6 @@ You can refer to the zdoom wiki for information on these line specials. Note tha
 **4: Polyobj_Move**
 
 **5: Polyobj_ExplicitLine**
-
-**6: Polyobj_MoveTimes8**
 
 **7: Polyobj_DoorSwing**
 
@@ -90,10 +86,6 @@ You can refer to the zdoom wiki for information on these line specials. Note tha
 **33: ForceField**
 
 **34: ClearForceField**
-
-**35: Floor_RaiseByValueTimes8**
-
-**36: Floor_LowerByValueTimes8**
 
 **37: Floor_MoveToValue**
 
@@ -150,10 +142,6 @@ You can refer to the zdoom wiki for information on these line specials. Note tha
 
 **67: Floor_RaiseInstant**
 
-**68: Floor_MoveToValueTimes8**
-
-**69: Ceiling_MoveToValueTimes8**
-
 **70: Teleport**
 
 **71: Teleport_NoFog**
@@ -186,8 +174,6 @@ You can refer to the zdoom wiki for information on these line specials. Note tha
 **91: Polyobj_OR_RotateRight**
 
 **92: Polyobj_OR_Move**
-
-**93: Polyobj_OR_MoveTimes8**
 
 **94: Pillar_BuildAndCrush**
 
@@ -297,10 +283,6 @@ You can refer to the zdoom wiki for information on these line specials. Note tha
 
 **197: Ceiling_CrushAndRaiseSilentA**
 
-**198: Ceiling_RaiseByValueTimes8**
-
-**199: Ceiling_LowerByValueTimes8**
-
 **200: Generic_Floor**
 
 **201: Generic_Ceiling**
@@ -316,9 +298,6 @@ You can refer to the zdoom wiki for information on these line specials. Note tha
 **206: Plat_DownWaitUpStayLip**
 
 **207: Plat_PerpetualRaiseLip**
-
-**208: TranslucentLine**
-- Translucent lines do not support additive translucency.
 
 **209: Transfer_Heights**
 
@@ -444,9 +423,42 @@ You can refer to the zdoom wiki for information on these line specials. Note tha
 
 **282: Line_SetAutomapStyle**
 
-#### Obsolete Line Specials
+---
+
+### New Line Specials
+
+**2701: Map_SetColormap(colormap)**
+Sets the map colormap.
+- _colormap_: the colormap (string argument).
+
+**2702: Sector_SetColormap(colormap, tag)**
+Sets the colormap for tagged sectors.
+- _colormap_: the colormap (string argument).
+- _tag_: The tag of the sector(s) to affect.
+
+---
+
+### Obsolete Line Specials
 
 The following lines are obsolete in udmf.
+
+**6: Polyobj_MoveTimes8**
+- Use 4: Polyobj_Move
+
+**35: Floor_RaiseByValueTimes8**
+- Use 23: Floor_RaiseByValue
+
+**36: Floor_LowerByValueTimes8**
+- Use 20: Floor_LowerByValue
+
+**68: Floor_MoveToValueTimes8**
+- Use 37: Floor_MoveToValue
+
+**69: Ceiling_MoveToValueTimes8**
+- Use 47: Ceiling_MoveToValue
+
+**93: Polyobj_OR_MoveTimes8**
+- Use 92: Polyobj_OR_Move
 
 **100: Scroll_Texture_Left** \[Obsolete\]
 - Use the sidedef scroll properties directly.
@@ -463,6 +475,15 @@ The following lines are obsolete in udmf.
 **190: Static_Init** \[Obsolete\]
 - Use the sector gravity, floor sky, ceiling sky, and damage properties directly.
 
+**198: Ceiling_RaiseByValueTimes8**
+- Use 41: Ceiling_RaiseByValue
+
+**199: Ceiling_LowerByValueTimes8**
+- Use 40: Ceiling_LowerByValue
+
+**208: TranslucentLine** \[Obsolete\]
+- Use the linedef alpha property directly.
+
 **210: Transfer_FloorLight** \[Obsolete\]
 - Use the sector floor light property directly.
 
@@ -475,7 +496,7 @@ The following lines are obsolete in udmf.
 **225: Scroll_Texture_Offsets** \[Obsolete\]
 - Use the sidedef scroll properties directly.
 
-### Sector Specials
+## Sector Specials
 
 Many sector specials are legacy effects from the original formats. More control can be obtained from sector properties in UDMF and the above line actions. DSDA-Doom has no concept of "terrain effects" (lava doesn't splash).
 

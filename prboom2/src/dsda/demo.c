@@ -37,6 +37,7 @@
 #include "dsda/features.h"
 #include "dsda/key_frame.h"
 #include "dsda/map_format.h"
+#include "dsda/preferences.h"
 #include "dsda/settings.h"
 #include "dsda/split_tracker.h"
 #include "dsda/utility.h"
@@ -54,15 +55,17 @@ static int largest_real_offset;
 static int demo_tics;
 static int compatibility_level_unspecified;
 
-#define DSDA_DEMO_VERSION 2
+#define DSDA_UDMF_VERSION 1
+#define DSDA_DEMO_VERSION 3
 #define DSDA_DEMO_HEADER_START_SIZE 8 // version + signature (6) + dsda version
 
-const int dsda_demo_header_data_size[DSDA_DEMO_VERSION + 1] = { 0, 8, 9 };
+const int dsda_demo_header_data_size[DSDA_DEMO_VERSION + 1] = { 0, 8, 9, 10 };
 
 typedef struct {
   int end_marker_location;
   int demo_tics;
   byte flags;
+  byte udmf_version;
 } dsda_demo_header_data_t;
 
 static dsda_demo_header_data_t dsda_demo_header_data;
@@ -691,6 +694,11 @@ static const byte* dsda_ReadDSDADemoHeader(const byte* demo_p, const byte* heade
   else
     dsda_demo_header_data.flags = 0;
 
+  if (dsda_demo_version >= 3)
+    dsda_demo_header_data.udmf_version = *demo_p++;
+  else
+    dsda_demo_header_data.udmf_version = 0;
+
   dsda_EnableExCmd();
 
   if (dsda_demo_header_data.flags & DF_CASUAL_FEATURES)
@@ -774,6 +782,8 @@ void dsda_WriteDSDADemoHeader(byte** p) {
   if (dsda_AllowCasualExCmdFeatures())
     demo_p[8] |= DF_CASUAL_FEATURES;
 
+  demo_p[9] = DSDA_UDMF_VERSION;
+
   demo_p += dsda_demo_header_data_size[dsda_demo_version];
 
   *p = demo_p;
@@ -784,12 +794,13 @@ void dsda_ApplyDSDADemoFormat(byte** demo_p) {
 
   if (map_format.zdoom)
   {
-    if (!dsda_Flag(dsda_arg_baddemo))
-      I_Error("Experimental formats require the -baddemo option to record.");
-
     if (!mbf21)
-      I_Error("You must use complevel 21 when recording on doom-in-hexen format.");
+      I_Error("You must use complevel 21 when recording in advanced formats.");
 
+    use_dsda_format = true;
+  }
+  else if (dsda_UseMapinfo())
+  {
     use_dsda_format = true;
   }
 
